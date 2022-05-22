@@ -1,6 +1,6 @@
-name: "cat-website"
+name: "All Things R"
 navbar:
-  title: "My cats' website"
+  title: "All Things R"
   left:
     - text: "Home"
       href: index.html
@@ -8,9 +8,12 @@ navbar:
       href:: about.html
   right: 
     - icon: fa-envelope fa-lg
-      href: mailto:<cats@catemail.com>
+      href: mailto:<william.pang@yale.edu>
     - icon: fa-github fa-lg
-      href: http://github.com/<YOUR_GH_NAME>/
+      href: http://github.com/williampangbest1/
+    - icon: fab fa-linkedin fa-lg
+      href: https://www.linkedin.com/in/william-pang-lh/ 
 output:
   html_document:
     theme: paper
+    css: 'styles.css'
