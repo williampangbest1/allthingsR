@@ -1,0 +1,236 @@
+---
+title: "Intermediate R Workshop"
+author: "Presented by William Pang"
+date: "6/2/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# Needed for R Markdown
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+
+# Needed for workshop code
+library(tidyverse)
+library(dplyr)
+```
+
+### Introduction and Some Basics
+
+This tutorial assumes a basic understanding of R functions and some of its basic properties. However, to ensure everyone is brought up to speed, I will mix in a review of some basic concepts in this workshop. If you are struggling to follow this material, I highly suggest reviewing the ["First Steps with R"](https://marx.library.yale.edu/data-gis-statlab/statlab/workshops/statistical-support-workshop-materials) tutorial that can be found on the [StatLab](https://marx.library.yale.edu/data-gis-statlab/statlab) website.
+
+To assign a variable in R, we use the leftward operator `<-`, which is unlike most other languages that utilizes `=`. Let's try assigning a variable:
+
+```{r, include = TRUE}
+a <- 3
+b <- 15
+
+a + b # Finding the sum of a and b
+```
+
+Here we have created two objects in R — the variable ```a``` and ```b```. 
+
+Another way to do this is to create a vector containing ```a``` and ```b```, and use the ```sum``` function to add everything in the newly created vector.
+
+```{r, include = TRUE}
+vectorSum <- c(a,b)
+
+# Utilizing the sum function
+sum(vectorSum)
+```
+
+If you're using R studio, you can find the objects stored in the environment tab on the right hand corner of your screen. Another way to check that the object is created is to type ```a``` (if you're familiar with linux operating systems, you can also use the ```ls()``` function to list the "working directory" of variables).
+
+Another point that I want to illustrate here is the use of comments. You can do so by adding a ```#``` to hide out the content that you don't want the computer to "read". It's always good practice to comment your code, as it helps you remember what's going on and helps whoever that wants to replicate your code. 
+
+On to packages!
+
+### Installing and Loading Packages
+You might have heard or already used packages such as ```tidyverse```, ```dplyr```, and other packages that pertain to the statistical analysis that you're doing. As a quick refresher, packages — which are essentially a set of functions (think of it as buying kitchen appliances) — needs to first be installed on your local machine. To do so, you can utilize the ```install.packages``` function. 
+
+For this example, we would like to install the ```tidyverse``` and ```dplyr``` in one line. Recall that we can use the combine argument, ```c("packageOne", "packageTwo")```.
+
+```{r, include = TRUE, eval = FALSE}
+install.packages(c("tidyverse","dplyr"))
+```
+If this is your first time installing the package onto your local machine, you should see a bunch of red text followed by the word *downloaded: size of file*. 
+
+Every time you use a new R session/R file, you need to load packages using the function . This is akin to saying that I bought a food processor in my apartment (i.e., installing the package) and that I will be using the food processor for my recipe (i.e., loading the packages). 
+
+```{r, include = TRUE, eval = FALSE}
+library(dplyr)
+library(tidyverse)
+
+# Alternatively, you could do this:
+packages <- c("dplyr", "tidyverse")
+lapply (packages, require, character.only = TRUE)
+```
+
+### Reading in Data Files
+If you're here, I'm assuming that your favorite function is `read.csv`. However, `read.csv` might not be the best practice if you're reading in data from other sources, especially data that contains dates which can become very messy in the long run. It's good practice to know the classes of your data before tooling around with it — knowing your data types early can prevent a lot of potential headaches down the line.
+
+To "force" variable classes in the different variables in your dataset, we use the `read_csv` command (as opposed to the read.csv command) that is part of the `tidyverse` package. Today, we'll be working with a fun Pokemon dataset that is available on [Github](https://raw.githubusercontent.com/KeithGalli/pandas/master/pokemon_data.csv).
+
+```{r}
+pokemon <- read_csv('https://raw.githubusercontent.com/KeithGalli/pandas/master/pokemon_data.csv')
+```
+
+Before working with the dataset, I just wanted to quiz folks here. Since we're using the `read_csv` function, this means that we must be reading a `csv file`. But how do I know that this is a `csv` file? Let's take a quick look at the [raw file](https://raw.githubusercontent.com/KeithGalli/pandas/master/pokemon_data.csv).
+
+As you can see, all the information is separated by *commas*, hence the name Comma-Separated Values, or csv. 
+
+Great, if you now look at your console, you can see that we're given information about the classes of the dataset. It's always great to do a quick scan of this to see whether anything is weird. Just for fun, I tried using the `read.csv` function to read the pokemon dataset, and I noticed that read.csv reads in data with numbers as an interger type, whereas the `read_csv` reads numbers as a numeric/double type. 
+
+This is not awfully important for most of your use cases (other than the fact that integers uses less memory, which doesn't really affect our usecase but might be a problem when you're working with million and million of rows of data and data storage is expensive!). Anyway, sorry for that small tangent, but I'm assuming some of you might work with very large datasets in the future, so it's always good to think about storage and that storage costs computational time and money!
+
+Okay, going back to the ```column specification```, you would notice that the `legendary` column is grouped under `lgl`, which means logical, or a boolean type (that is, a variable that will only give you TRUE or FALSE). 
+
+So why is it important that we know that this is a logical class type? For instance, we want out how many of the 800 pokemons are legendary. 
+
+```{r}
+sum(pokemon$Legendary)
+```
+
+Say that the legendary variable was of the ```chr``` character class. Let's hold this thought for now as I show you how to force the variable class for the data you're reading. 
+
+The ```read_csv``` allows us to force the variable class. We don't have to type it out all manually — the ```spec()``` function automatically generates the ```col_types``` that we can copy and paste.  
+
+```{r, results = 'hide', eval= FALSE}
+spec(pokemon)
+
+pokemon <- read_csv('https://raw.githubusercontent.com/KeithGalli/pandas/master/pokemon_data.csv',
+  col_types = cols(
+  `#` = col_double(),
+  Name = col_character(),
+  `Type 1` = col_character(),
+  `Type 2` = col_character(),
+  HP = col_double(),
+  Attack = col_double(),
+  Defense = col_double(),
+  `Sp. Atk` = col_double(),
+  `Sp. Def` = col_double(),
+  Speed = col_double(),
+  Generation = col_double(),
+  Legendary = col_character() # Changed from col_logical()
+  )
+)
+```
+Now let's try summing up the legendary variable to find out the number of legendary Pokemons in our Pokedex:
+
+```{r, eval = FALSE}
+sum(pokemon$Legendary)
+```
+
+As a tip, if you're unfamiliar with the inputs of a function, it's always useful to consult ```?functionName```. In this case, it would be ```?read_csv```.
+
+### A First Glance at your dataset
+I'm sure a lot of you know this so I'll run through this quickly, but as a student myself I know that it's sometimes good to just do a quick summary of basic functions that you can refer back to later on. Going back to the pokemon dataset:
+
+```{r, results = 'hide'}
+head(pokemon, n = 5) #Gives the first 5 rows in a dataset, or our Pokedex
+tail(pokemon, n = 5) # Gives the last 5 rows in a dataset, or our Pokedex
+summary(pokemon) 
+# Provides a summary statistic of each variable. While it might not be too helpful to know the min or max of the Pokedex number, stats about the attack, speed, and defense could be quite useful to us. 
+table(pokemon$`Type 1`) # Count the number of types in the Pokedex
+prop.table(table(pokemon$`Type 1`))
+```
+
+If you're in a pinch, you can refer to this table.
+
+```{r table2, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
+tabl <- "
+| Function Name         | Description                                             |
+|-----------------------|---------------------------------------------------------|
+| head( )               | Gives the first few rows in a dataset                   |
+| tail( )               | Gives the last few rows in a dataset                    |
+| summary( )            | Provides some basic summary statistics of each variable |
+| table( )              | Counts the occurrence each variable                     |
+| prop.table(table ( )) | Provides the proportion of occurrence of each variable  |
+| colnames( )            | Gives us the column names of the dataset                |
+"
+cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
+```
+
+Okay, so we were able to get a bird's eye view of the statistics. But say I only wanted to analyze legendary Pokemons. How do I subset my data in a way that only includes Legendary Pokemon? 
+
+```{r, eval = FALSE}
+pokemon[pokemon$Legendary == "TRUE", ]
+```
+
+Okay! Now I want to know more about the dataset for just legendary Pokemons. It would be useful to know, for instance, what their HP, attack, and defense points are like. 
+
+**Challenge:** For the Pokemon fans out there, I encourage you to play around after the workshop to compare stats between the legendary and non-legendary Pokemons by modifiying this code. 
+
+```{r, results = 'hide'}
+onlyLegendary <- pokemon[pokemon$Legendary == "TRUE", ]
+summary(onlyLegendary)
+```
+
+I might also be curious to know the names of Pokemons are legendary, or to know their numbers on the Pokedex so I can flip the physical book faster (which I don't think anyone does anymore, but please help me indulge in my childhood).
+
+```{r, eval = FALSE}
+onlyLegendary$Name 
+onlyLegendary$`#`
+```
+
+### Modifying Data
+Here we will be introducing the concept of piping, which you might have been exposed to and is part of the `dplyr` package. The main idea of piping is really to simplify your code -- you could theoretically do without piping, as you can see as we try and replicate some examples from above -- but the advantages of piping should be obvious. 
+
+Let's try doing the previous operation again, that is, to find the summary statistics of only legendary Pokemons. First, we nede to make sure that `dplyr` is in our library.
+
+```{r, eval = FALSE}
+library(dplyr)
+
+pokemon %>% filter(Legendary == "TRUE") %>% summary()
+```
+
+Here, I cheated with the `filter` function (I could have used the filter equivalent in base R, which is `subset`), but we'll ignore this little fact for now. The point I'm trying to make is that the code is way more concise (I don't have to create a new variable called `onlyLegendary`, or use the dollar `$` symbol a million times) and easy to follow. 
+
+I'm also going to use the opportunity to rename some of the variables in my dataset. For instance, the Pokedex number is represented with the pound `#` sign, which can be problematic as R might read it as a comment. I'm also going to rename some other variables while I'm at it for convenience in coding later. 
+
+To do so, we can use the `rename` function, where `new_variable_name = old_variable_name`. 
+
+```{r, results = 'hide'}
+pokemon %>% rename(id = `#`, legendary = Legendary, type1 = `Type 1`, type2 = `Type 2`)
+```
+
+Okay, let's check if the variables have been renamed.
+
+```{r, eval = FALSE}
+ls(pokemon)
+```
+
+Wait, what just happened? The changes don't seem to be saved when I call the `pokemon` data frame. This is because the pipe operation in `dplyr` outputs the data in something called a `tibble`, but does not make changes to the original dataset. This can be incredibly useful in some contexts (for instance, you want to demonstrate that you don't need to touch the original dataset for your analysis, which can be important for reproducibility), but for my purposes — which is to make the coding life a bit easier — I would like to permanently change my dataset.
+
+```{r, results = 'hide'}
+pokemon <- pokemon %>% rename(id = `#`, legendary = Legendary, type1 = `Type 1`, type2 = `Type 2`)
+```
+
+The simple fix would be to rewrite our `pokemon` dataset using the right arrow operator `<-`. Let's run the `ls` function again.
+
+```{r, results = 'hide'}
+ls(pokemon)
+```
+
+Perfect! Remember that variable names in R are *case sensitive* — knowing this fact and renaming your variables could save a lot of time in trouble shooting. 
+
+Okay, let's get more practice with some core `dplyr` functions. Say I know my Pokemon stats quite well, and my guess is that a legendary pokemon has an HP at least greater than 92 and attack at least greater than 116 (heh, I cheated by looking at the summary statistics).
+
+```{r, results = 'hide'}
+powerfulPokemon <- pokemon %>% filter(HP >= 92 & Attack >= 116) 
+sum(powerfulPokemon$legendary)/nrow(powerfulPokemon) 
+65/nrow(pokemon) # Recall that there are 65 legendary Pokemons
+```
+
+So among Pokemons with an HP at least greater than 92 and attack at least greater than 116, around 42% of them are legendary (recall that there are about 65 legendary pokemons in total, which is about 8% of all pokemons).
+
+We can also filter by type. I so happen to know — with the help of Google - that most legendary Pokemons are psychic type.
+
+```{r}
+psychicPokemon <- pokemon %>% filter(type1 == "Psychic")
+sum(psychicPokemon$legendary)/nrow(psychicPokemon)
+```
+
+Around 25% of psychic Pokemons are legendary. That is pretty high - compared to the water Pokemon (which is the most popular), where only about 4% of water pokemons are legendary.
+
+

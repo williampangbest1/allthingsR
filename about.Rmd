@@ -1,5 +1,1 @@
----
-title: "About This Website"
----
-
-More about this website.
+- [Intermediate R](IntermediateR.html) (June 8, 2022 [Yale Stat Lab](https://marx.library.yale.edu/data-gis-statlab/statlab) Workshop)

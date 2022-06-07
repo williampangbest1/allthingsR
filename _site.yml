@@ -2,9 +2,7 @@ name: "All Things R"
 navbar:
   title: "All Things R"
   left:
-    - text: "Home"
-      href: index.html
-    - text: "About"
+    - text: "Coding"
       href:: about.html
   right: 
     - icon: fa-envelope fa-lg
