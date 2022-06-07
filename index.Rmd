@@ -36,7 +36,7 @@ That's Yuki and Koya — two of my favorite pets (I'm not their owners though, b
 </div>
 <div class="col-sm-6">
 
-<a href = "https://www.instagram.com/yuki.x.sama/">
+<a href = "https://www.instagram.com/yuki.x.koya/">
 ![](files/yukiandkoya.png)
 </a>
 </div>
