@@ -176,6 +176,8 @@ onlyLegendary$`#`
 ### Modifying Data
 Here we will be introducing the concept of piping, which you might have been exposed to and is part of the `dplyr` package. The main idea of piping is really to simplify your code -- you could theoretically do without piping, as you can see as we try and replicate some examples from above -- but the advantages of piping should be obvious. 
 
+**Key Idea:** What the pipe function does is take the output of one function and passes it into another function as an argument
+
 Let's try doing the previous operation again, that is, to find the summary statistics of only legendary Pokemons. First, we nede to make sure that `dplyr` is in our library.
 
 ```{r, eval = FALSE}
@@ -214,7 +216,7 @@ ls(pokemon)
 
 Perfect! Remember that variable names in R are *case sensitive* — knowing this fact and renaming your variables could save a lot of time in trouble shooting. 
 
-Okay, let's get more practice with some core `dplyr` functions. Say I know my Pokemon stats quite well, and my guess is that a legendary pokemon has an HP at least greater than 92 and attack at least greater than 116 (heh, I cheated by looking at the summary statistics).
+Okay, let's get more practice with some core `dplyr` functions. Say I know my Pokemon stats quite well, and my guess is that a legendary Pokémon has an HP at least greater than 92 and attack at least greater than 116 (heh, I cheated by looking at the summary statistics).
 
 ```{r, results = 'hide'}
 powerfulPokemon <- pokemon %>% filter(HP >= 92 & Attack >= 116) 
@@ -222,15 +224,73 @@ sum(powerfulPokemon$legendary)/nrow(powerfulPokemon)
 65/nrow(pokemon) # Recall that there are 65 legendary Pokemons
 ```
 
-So among Pokemons with an HP at least greater than 92 and attack at least greater than 116, around 42% of them are legendary (recall that there are about 65 legendary pokemons in total, which is about 8% of all pokemons).
+So among Pokémons with an HP at least greater than 92 and attack at least greater than 116, around 42% of them are legendary (recall that there are about 65 legendary Pokémons in total, which is about 8% of all Pokémons).
 
-We can also filter by type. I so happen to know — with the help of Google - that most legendary Pokemons are psychic type.
+We can also filter by type. I so happen to know — with the help of Google - that most legendary Pokémons are psychic type.
 
 ```{r}
 psychicPokemon <- pokemon %>% filter(type1 == "Psychic")
 sum(psychicPokemon$legendary)/nrow(psychicPokemon)
 ```
 
-Around 25% of psychic Pokemons are legendary. That is pretty high - compared to the water Pokemon (which is the most popular), where only about 4% of water pokemons are legendary.
+Around 25% of psychic Pokémons are legendary. That is pretty high - compared to the water Pokemon (which is the most popular), where only about 4% of water Pokémons are legendary.
+
+Sweet! Another idea we might have is to be see if legendary Pokémons have a higher overall total points. We could do this with the `mutate` function.
+
+```{r, results = 'hide'}
+pokemon <- pokemon %>% mutate(total = rowSums(.[5:10]))
+
+# Always good practice to check if the function is doing what we want
+
+colnames(pokemon) # Check if the total variable is created
+sum(pokemon[1, 5:10]) # Sum columns 5 to 10 of row 1
+pokemon$total[1] # This should equal to the new variable we created 
+```
+
+Notice the dot `.` in the mutate function. The `.` function is equivalent to saying `rowsums(pokemon[5:10])`. But isn't this the whole point of using the pipe operator — to avoid this hassle? 
+
+Recall what the pipe function does. It takes the output of the LHS (left hand side) of the function and passes it to the RHS (right hand side).
+
+However, some functions work better at "understanding" dataframes, while others work better at interpreting one dimensional vectors. The sum function is used to add up everything in a one dimension vector -- as we saw in our very first example when I asked you to create a vector adding up `a+b`.  But recall that from the pipe function, we're feeding in a dataframe, not a specific column. 
+
+The take-home message here is to understand the general idea behind what a function is doing — and leave the nut and bolts idiosyncrasies to Google or Stackoverflow. We will be introducing the `group_by` function in a bit that makes life easier, but just to finish up with the example:
+
+```{r}
+onlyLegendary <- pokemon %>% filter(legendary == "TRUE") %>% {sum(.$total)}/65
+notLegendary <- pokemon %>% filter(legendary == "FALSE") %>% {sum(.$total)}/(800-65)
+```
+
+Again, the use of curly brackets `{}` is related to telling the computer how to parse the data and is specific to the function. So be careful when piping!
+
+Okay, let me drop the `total` column just to make things like it was. We can use the `select` function.
+
+```{r}
+pokemon <- pokemon %>% select(-total)
+```
+
+In this case, the `-` sign means that we are removing a variable. Of course, you could also do this by writing out `pokemon %>% select(type1, type2, HP, Attack, Defense ...)`, but that would be very tedious. 
+
+To summarize what we've learnt:
+
+```{r table3, echo=FALSE, message=FALSE, warnings=FALSE, results='asis'}
+tabl <- "
+| Function Name         | Description                                             |
+|-----------------------|---------------------------------------------------------|
+| filter( )             | Subsetting a dataset                                    |
+| arrange( )            | [Sorting](https://www.datasciencemadesimple.com/sorting-dataframe-r-using-dplyr/) a dataset                                       |
+| select( )             | Dropping variables in a dataset                         |
+| rename( )             | Renaming variables in a datset                          |
+| mutate( )             | Creating a new variable                                 |
+"
+cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
+```
+
+### Collapsing Data
+
+
+
+
+
+
 
 

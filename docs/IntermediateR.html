@@ -286,31 +286,67 @@ $(document).ready(function () {
 
 <div id="introduction-and-some-basics" class="section level3">
 <h3>Introduction and Some Basics</h3>
-<p>This tutorial assumes a basic understanding of R functions and some of its basic properties. However, to ensure everyone is brought up to speed, I will mix in a review of some basic concepts in this workshop. If you are struggling to follow this material, I highly suggest reviewing the <a href="https://marx.library.yale.edu/data-gis-statlab/statlab/workshops/statistical-support-workshop-materials">“First Steps with R”</a> tutorial that can be found on the <a href="https://marx.library.yale.edu/data-gis-statlab/statlab">StatLab</a> website.</p>
-<p>To assign a variable in R, we use the leftward operator <code>&lt;-</code>, which is unlike most other languages that utilizes <code>=</code>. Let’s try assigning a variable:</p>
+<p>This tutorial assumes a basic understanding of R functions and some
+of its basic properties. However, to ensure everyone is brought up to
+speed, I will mix in a review of some basic concepts in this workshop.
+If you are struggling to follow this material, I highly suggest
+reviewing the <a
+href="https://marx.library.yale.edu/data-gis-statlab/statlab/workshops/statistical-support-workshop-materials">“First
+Steps with R”</a> tutorial that can be found on the <a
+href="https://marx.library.yale.edu/data-gis-statlab/statlab">StatLab</a>
+website.</p>
+<p>To assign a variable in R, we use the leftward operator
+<code>&lt;-</code>, which is unlike most other languages that utilizes
+<code>=</code>. Let’s try assigning a variable:</p>
 <pre class="r"><code>a &lt;- 3
 b &lt;- 15
 
 a + b # Finding the sum of a and b</code></pre>
 <pre><code>## [1] 18</code></pre>
-<p>Here we have created two objects in R — the variable <code>a</code> and <code>b</code>.</p>
-<p>Another way to do this is to create a vector containing <code>a</code> and <code>b</code>, and use the <code>sum</code> function to add everything in the newly created vector.</p>
+<p>Here we have created two objects in R — the variable <code>a</code>
+and <code>b</code>.</p>
+<p>Another way to do this is to create a vector containing
+<code>a</code> and <code>b</code>, and use the <code>sum</code> function
+to add everything in the newly created vector.</p>
 <pre class="r"><code>vectorSum &lt;- c(a,b)
 
 # Utilizing the sum function
 sum(vectorSum)</code></pre>
 <pre><code>## [1] 18</code></pre>
-<p>If you’re using R studio, you can find the objects stored in the environment tab on the right hand corner of your screen. Another way to check that the object is created is to type <code>a</code> (if you’re familiar with linux operating systems, you can also use the <code>ls()</code> function to list the “working directory” of variables).</p>
-<p>Another point that I want to illustrate here is the use of comments. You can do so by adding a <code>#</code> to hide out the content that you don’t want the computer to “read”. It’s always good practice to comment your code, as it helps you remember what’s going on and helps whoever that wants to replicate your code.</p>
+<p>If you’re using R studio, you can find the objects stored in the
+environment tab on the right hand corner of your screen. Another way to
+check that the object is created is to type <code>a</code> (if you’re
+familiar with linux operating systems, you can also use the
+<code>ls()</code> function to list the “working directory” of
+variables).</p>
+<p>Another point that I want to illustrate here is the use of comments.
+You can do so by adding a <code>#</code> to hide out the content that
+you don’t want the computer to “read”. It’s always good practice to
+comment your code, as it helps you remember what’s going on and helps
+whoever that wants to replicate your code.</p>
 <p>On to packages!</p>
 </div>
 <div id="installing-and-loading-packages" class="section level3">
 <h3>Installing and Loading Packages</h3>
-<p>You might have heard or already used packages such as <code>tidyverse</code>, <code>dplyr</code>, and other packages that pertain to the statistical analysis that you’re doing. As a quick refresher, packages — which are essentially a set of functions (think of it as buying kitchen appliances) — needs to first be installed on your local machine. To do so, you can utilize the <code>install.packages</code> function.</p>
-<p>For this example, we would like to install the <code>tidyverse</code> and <code>dplyr</code> in one line. Recall that we can use the combine argument, <code>c("packageOne", "packageTwo")</code>.</p>
+<p>You might have heard or already used packages such as
+<code>tidyverse</code>, <code>dplyr</code>, and other packages that
+pertain to the statistical analysis that you’re doing. As a quick
+refresher, packages — which are essentially a set of functions (think of
+it as buying kitchen appliances) — needs to first be installed on your
+local machine. To do so, you can utilize the
+<code>install.packages</code> function.</p>
+<p>For this example, we would like to install the <code>tidyverse</code>
+and <code>dplyr</code> in one line. Recall that we can use the combine
+argument, <code>c("packageOne", "packageTwo")</code>.</p>
 <pre class="r"><code>install.packages(c(&quot;tidyverse&quot;,&quot;dplyr&quot;))</code></pre>
-<p>If this is your first time installing the package onto your local machine, you should see a bunch of red text followed by the word <em>downloaded: size of file</em>.</p>
-<p>Every time you use a new R session/R file, you need to load packages using the function . This is akin to saying that I bought a food processor in my apartment (i.e., installing the package) and that I will be using the food processor for my recipe (i.e., loading the packages).</p>
+<p>If this is your first time installing the package onto your local
+machine, you should see a bunch of red text followed by the word
+<em>downloaded: size of file</em>.</p>
+<p>Every time you use a new R session/R file, you need to load packages
+using the function . This is akin to saying that I bought a food
+processor in my apartment (i.e., installing the package) and that I will
+be using the food processor for my recipe (i.e., loading the
+packages).</p>
 <pre class="r"><code>library(dplyr)
 library(tidyverse)
 
@@ -320,8 +356,19 @@ lapply (packages, require, character.only = TRUE)</code></pre>
 </div>
 <div id="reading-in-data-files" class="section level3">
 <h3>Reading in Data Files</h3>
-<p>If you’re here, I’m assuming that your favorite function is <code>read.csv</code>. However, <code>read.csv</code> might not be the best practice if you’re reading in data from other sources, especially data that contains dates which can become very messy in the long run. It’s good practice to know the classes of your data before tooling around with it — knowing your data types early can prevent a lot of potential headaches down the line.</p>
-<p>To “force” variable classes in the different variables in your dataset, we use the <code>read_csv</code> command (as opposed to the read.csv command) that is part of the <code>tidyverse</code> package. Today, we’ll be working with a fun Pokemon dataset that is available on <a href="https://raw.githubusercontent.com/KeithGalli/pandas/master/pokemon_data.csv">Github</a>.</p>
+<p>If you’re here, I’m assuming that your favorite function is
+<code>read.csv</code>. However, <code>read.csv</code> might not be the
+best practice if you’re reading in data from other sources, especially
+data that contains dates which can become very messy in the long run.
+It’s good practice to know the classes of your data before tooling
+around with it — knowing your data types early can prevent a lot of
+potential headaches down the line.</p>
+<p>To “force” variable classes in the different variables in your
+dataset, we use the <code>read_csv</code> command (as opposed to the
+read.csv command) that is part of the <code>tidyverse</code> package.
+Today, we’ll be working with a fun Pokemon dataset that is available on
+<a
+href="https://raw.githubusercontent.com/KeithGalli/pandas/master/pokemon_data.csv">Github</a>.</p>
 <pre class="r"><code>pokemon &lt;- read_csv(&#39;https://raw.githubusercontent.com/KeithGalli/pandas/master/pokemon_data.csv&#39;)</code></pre>
 <pre><code>## Rows: 800 Columns: 12
 ## ── Column specification ────────────────────────────────────────────────────────
@@ -332,16 +379,44 @@ lapply (packages, require, character.only = TRUE)</code></pre>
 ## 
 ## ℹ Use `spec()` to retrieve the full column specification for this data.
 ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<p>Before working with the dataset, I just wanted to quiz folks here. Since we’re using the <code>read_csv</code> function, this means that we must be reading a <code>csv file</code>. But how do I know that this is a <code>csv</code> file? Let’s take a quick look at the <a href="https://raw.githubusercontent.com/KeithGalli/pandas/master/pokemon_data.csv">raw file</a>.</p>
-<p>As you can see, all the information is separated by <em>commas</em>, hence the name Comma-Separated Values, or csv.</p>
-<p>Great, if you now look at your console, you can see that we’re given information about the classes of the dataset. It’s always great to do a quick scan of this to see whether anything is weird. Just for fun, I tried using the <code>read.csv</code> function to read the pokemon dataset, and I noticed that read.csv reads in data with numbers as an interger type, whereas the <code>read_csv</code> reads numbers as a numeric/double type.</p>
-<p>This is not awfully important for most of your use cases (other than the fact that integers uses less memory, which doesn’t really affect our usecase but might be a problem when you’re working with million and million of rows of data and data storage is expensive!). Anyway, sorry for that small tangent, but I’m assuming some of you might work with very large datasets in the future, so it’s always good to think about storage and that storage costs computational time and money!</p>
-<p>Okay, going back to the <code>column specification</code>, you would notice that the <code>legendary</code> column is grouped under <code>lgl</code>, which means logical, or a boolean type (that is, a variable that will only give you TRUE or FALSE).</p>
-<p>So why is it important that we know that this is a logical class type? For instance, we want out how many of the 800 pokemons are legendary.</p>
+<p>Before working with the dataset, I just wanted to quiz folks here.
+Since we’re using the <code>read_csv</code> function, this means that we
+must be reading a <code>csv file</code>. But how do I know that this is
+a <code>csv</code> file? Let’s take a quick look at the <a
+href="https://raw.githubusercontent.com/KeithGalli/pandas/master/pokemon_data.csv">raw
+file</a>.</p>
+<p>As you can see, all the information is separated by <em>commas</em>,
+hence the name Comma-Separated Values, or csv.</p>
+<p>Great, if you now look at your console, you can see that we’re given
+information about the classes of the dataset. It’s always great to do a
+quick scan of this to see whether anything is weird. Just for fun, I
+tried using the <code>read.csv</code> function to read the pokemon
+dataset, and I noticed that read.csv reads in data with numbers as an
+interger type, whereas the <code>read_csv</code> reads numbers as a
+numeric/double type.</p>
+<p>This is not awfully important for most of your use cases (other than
+the fact that integers uses less memory, which doesn’t really affect our
+usecase but might be a problem when you’re working with million and
+million of rows of data and data storage is expensive!). Anyway, sorry
+for that small tangent, but I’m assuming some of you might work with
+very large datasets in the future, so it’s always good to think about
+storage and that storage costs computational time and money!</p>
+<p>Okay, going back to the <code>column specification</code>, you would
+notice that the <code>legendary</code> column is grouped under
+<code>lgl</code>, which means logical, or a boolean type (that is, a
+variable that will only give you TRUE or FALSE).</p>
+<p>So why is it important that we know that this is a logical class
+type? For instance, we want out how many of the 800 pokemons are
+legendary.</p>
 <pre class="r"><code>sum(pokemon$Legendary)</code></pre>
 <pre><code>## [1] 65</code></pre>
-<p>Say that the legendary variable was of the <code>chr</code> character class. Let’s hold this thought for now as I show you how to force the variable class for the data you’re reading.</p>
-<p>The <code>read_csv</code> allows us to force the variable class. We don’t have to type it out all manually — the <code>spec()</code> function automatically generates the <code>col_types</code> that we can copy and paste.</p>
+<p>Say that the legendary variable was of the <code>chr</code> character
+class. Let’s hold this thought for now as I show you how to force the
+variable class for the data you’re reading.</p>
+<p>The <code>read_csv</code> allows us to force the variable class. We
+don’t have to type it out all manually — the <code>spec()</code>
+function automatically generates the <code>col_types</code> that we can
+copy and paste.</p>
 <pre class="r"><code>spec(pokemon)
 
 pokemon &lt;- read_csv(&#39;https://raw.githubusercontent.com/KeithGalli/pandas/master/pokemon_data.csv&#39;,
@@ -360,13 +435,19 @@ pokemon &lt;- read_csv(&#39;https://raw.githubusercontent.com/KeithGalli/pandas/
   Legendary = col_character() # Changed from col_logical()
   )
 )</code></pre>
-<p>Now let’s try summing up the legendary variable to find out the number of legendary Pokemons in our Pokedex:</p>
+<p>Now let’s try summing up the legendary variable to find out the
+number of legendary Pokemons in our Pokedex:</p>
 <pre class="r"><code>sum(pokemon$Legendary)</code></pre>
-<p>As a tip, if you’re unfamiliar with the inputs of a function, it’s always useful to consult <code>?functionName</code>. In this case, it would be <code>?read_csv</code>.</p>
+<p>As a tip, if you’re unfamiliar with the inputs of a function, it’s
+always useful to consult <code>?functionName</code>. In this case, it
+would be <code>?read_csv</code>.</p>
 </div>
 <div id="a-first-glance-at-your-dataset" class="section level3">
 <h3>A First Glance at your dataset</h3>
-<p>I’m sure a lot of you know this so I’ll run through this quickly, but as a student myself I know that it’s sometimes good to just do a quick summary of basic functions that you can refer back to later on. Going back to the pokemon dataset:</p>
+<p>I’m sure a lot of you know this so I’ll run through this quickly, but
+as a student myself I know that it’s sometimes good to just do a quick
+summary of basic functions that you can refer back to later on. Going
+back to the pokemon dataset:</p>
 <pre class="r"><code>head(pokemon, n = 5) #Gives the first 5 rows in a dataset, or our Pokedex
 tail(pokemon, n = 5) # Gives the last 5 rows in a dataset, or our Pokedex
 summary(pokemon) 
@@ -412,44 +493,175 @@ prop.table(table(pokemon$`Type 1`))</code></pre>
 </tr>
 </tbody>
 </table>
-<p>Okay, so we were able to get a bird’s eye view of the statistics. But say I only wanted to analyze legendary Pokemons. How do I subset my data in a way that only includes Legendary Pokemon?</p>
+<p>Okay, so we were able to get a bird’s eye view of the statistics. But
+say I only wanted to analyze legendary Pokemons. How do I subset my data
+in a way that only includes Legendary Pokemon?</p>
 <pre class="r"><code>pokemon[pokemon$Legendary == &quot;TRUE&quot;, ]</code></pre>
-<p>Okay! Now I want to know more about the dataset for just legendary Pokemons. It would be useful to know, for instance, what their HP, attack, and defense points are like.</p>
-<p><strong>Challenge:</strong> For the Pokemon fans out there, I encourage you to play around after the workshop to compare stats between the legendary and non-legendary Pokemons by modifiying this code.</p>
+<p>Okay! Now I want to know more about the dataset for just legendary
+Pokemons. It would be useful to know, for instance, what their HP,
+attack, and defense points are like.</p>
+<p><strong>Challenge:</strong> For the Pokemon fans out there, I
+encourage you to play around after the workshop to compare stats between
+the legendary and non-legendary Pokemons by modifiying this code.</p>
 <pre class="r"><code>onlyLegendary &lt;- pokemon[pokemon$Legendary == &quot;TRUE&quot;, ]
 summary(onlyLegendary)</code></pre>
-<p>I might also be curious to know the names of Pokemons are legendary, or to know their numbers on the Pokedex so I can flip the physical book faster (which I don’t think anyone does anymore, but please help me indulge in my childhood).</p>
+<p>I might also be curious to know the names of Pokemons are legendary,
+or to know their numbers on the Pokedex so I can flip the physical book
+faster (which I don’t think anyone does anymore, but please help me
+indulge in my childhood).</p>
 <pre class="r"><code>onlyLegendary$Name 
 onlyLegendary$`#`</code></pre>
 </div>
 <div id="modifying-data" class="section level3">
 <h3>Modifying Data</h3>
-<p>Here we will be introducing the concept of piping, which you might have been exposed to and is part of the <code>dplyr</code> package. The main idea of piping is really to simplify your code – you could theoretically do without piping, as you can see as we try and replicate some examples from above – but the advantages of piping should be obvious.</p>
-<p>Let’s try doing the previous operation again, that is, to find the summary statistics of only legendary Pokemons. First, we nede to make sure that <code>dplyr</code> is in our library.</p>
+<p>Here we will be introducing the concept of piping, which you might
+have been exposed to and is part of the <code>dplyr</code> package. The
+main idea of piping is really to simplify your code – you could
+theoretically do without piping, as you can see as we try and replicate
+some examples from above – but the advantages of piping should be
+obvious.</p>
+<p><strong>Key Idea:</strong> What the pipe function does is take the
+output of one function and passes it into another function as an
+argument</p>
+<p>Let’s try doing the previous operation again, that is, to find the
+summary statistics of only legendary Pokemons. First, we nede to make
+sure that <code>dplyr</code> is in our library.</p>
 <pre class="r"><code>library(dplyr)
 
 pokemon %&gt;% filter(Legendary == &quot;TRUE&quot;) %&gt;% summary()</code></pre>
-<p>Here, I cheated with the <code>filter</code> function (I could have used the filter equivalent in base R, which is <code>subset</code>), but we’ll ignore this little fact for now. The point I’m trying to make is that the code is way more concise (I don’t have to create a new variable called <code>onlyLegendary</code>, or use the dollar <code>$</code> symbol a million times) and easy to follow.</p>
-<p>I’m also going to use the opportunity to rename some of the variables in my dataset. For instance, the Pokedex number is represented with the pound <code>#</code> sign, which can be problematic as R might read it as a comment. I’m also going to rename some other variables while I’m at it for convenience in coding later.</p>
-<p>To do so, we can use the <code>rename</code> function, where <code>new_variable_name = old_variable_name</code>.</p>
+<p>Here, I cheated with the <code>filter</code> function (I could have
+used the filter equivalent in base R, which is <code>subset</code>), but
+we’ll ignore this little fact for now. The point I’m trying to make is
+that the code is way more concise (I don’t have to create a new variable
+called <code>onlyLegendary</code>, or use the dollar <code>$</code>
+symbol a million times) and easy to follow.</p>
+<p>I’m also going to use the opportunity to rename some of the variables
+in my dataset. For instance, the Pokedex number is represented with the
+pound <code>#</code> sign, which can be problematic as R might read it
+as a comment. I’m also going to rename some other variables while I’m at
+it for convenience in coding later.</p>
+<p>To do so, we can use the <code>rename</code> function, where
+<code>new_variable_name = old_variable_name</code>.</p>
 <pre class="r"><code>pokemon %&gt;% rename(id = `#`, legendary = Legendary, type1 = `Type 1`, type2 = `Type 2`)</code></pre>
 <p>Okay, let’s check if the variables have been renamed.</p>
 <pre class="r"><code>ls(pokemon)</code></pre>
-<p>Wait, what just happened? The changes don’t seem to be saved when I call the <code>pokemon</code> data frame. This is because the pipe operation in <code>dplyr</code> outputs the data in something called a <code>tibble</code>, but does not make changes to the original dataset. This can be incredibly useful in some contexts (for instance, you want to demonstrate that you don’t need to touch the original dataset for your analysis, which can be important for reproducibility), but for my purposes — which is to make the coding life a bit easier — I would like to permanently change my dataset.</p>
+<p>Wait, what just happened? The changes don’t seem to be saved when I
+call the <code>pokemon</code> data frame. This is because the pipe
+operation in <code>dplyr</code> outputs the data in something called a
+<code>tibble</code>, but does not make changes to the original dataset.
+This can be incredibly useful in some contexts (for instance, you want
+to demonstrate that you don’t need to touch the original dataset for
+your analysis, which can be important for reproducibility), but for my
+purposes — which is to make the coding life a bit easier — I would like
+to permanently change my dataset.</p>
 <pre class="r"><code>pokemon &lt;- pokemon %&gt;% rename(id = `#`, legendary = Legendary, type1 = `Type 1`, type2 = `Type 2`)</code></pre>
-<p>The simple fix would be to rewrite our <code>pokemon</code> dataset using the right arrow operator <code>&lt;-</code>. Let’s run the <code>ls</code> function again.</p>
+<p>The simple fix would be to rewrite our <code>pokemon</code> dataset
+using the right arrow operator <code>&lt;-</code>. Let’s run the
+<code>ls</code> function again.</p>
 <pre class="r"><code>ls(pokemon)</code></pre>
-<p>Perfect! Remember that variable names in R are <em>case sensitive</em> — knowing this fact and renaming your variables could save a lot of time in trouble shooting.</p>
-<p>Okay, let’s get more practice with some core <code>dplyr</code> functions. Say I know my Pokemon stats quite well, and my guess is that a legendary pokemon has an HP at least greater than 92 and attack at least greater than 116 (heh, I cheated by looking at the summary statistics).</p>
+<p>Perfect! Remember that variable names in R are <em>case
+sensitive</em> — knowing this fact and renaming your variables could
+save a lot of time in trouble shooting.</p>
+<p>Okay, let’s get more practice with some core <code>dplyr</code>
+functions. Say I know my Pokemon stats quite well, and my guess is that
+a legendary Pokémon has an HP at least greater than 92 and attack at
+least greater than 116 (heh, I cheated by looking at the summary
+statistics).</p>
 <pre class="r"><code>powerfulPokemon &lt;- pokemon %&gt;% filter(HP &gt;= 92 &amp; Attack &gt;= 116) 
 sum(powerfulPokemon$legendary)/nrow(powerfulPokemon) 
 65/nrow(pokemon) # Recall that there are 65 legendary Pokemons</code></pre>
-<p>So among Pokemons with an HP at least greater than 92 and attack at least greater than 116, around 42% of them are legendary (recall that there are about 65 legendary pokemons in total, which is about 8% of all pokemons).</p>
-<p>We can also filter by type. I so happen to know — with the help of Google - that most legendary Pokemons are psychic type.</p>
+<p>So among Pokémons with an HP at least greater than 92 and attack at
+least greater than 116, around 42% of them are legendary (recall that
+there are about 65 legendary Pokémons in total, which is about 8% of all
+Pokémons).</p>
+<p>We can also filter by type. I so happen to know — with the help of
+Google - that most legendary Pokémons are psychic type.</p>
 <pre class="r"><code>psychicPokemon &lt;- pokemon %&gt;% filter(type1 == &quot;Psychic&quot;)
 sum(psychicPokemon$legendary)/nrow(psychicPokemon)</code></pre>
 <pre><code>## [1] 0.245614</code></pre>
-<p>Around 25% of psychic Pokemons are legendary. That is pretty high - compared to the water Pokemon (which is the most popular), where only about 4% of water pokemons are legendary.</p>
+<p>Around 25% of psychic Pokémons are legendary. That is pretty high -
+compared to the water Pokemon (which is the most popular), where only
+about 4% of water Pokémons are legendary.</p>
+<p>Sweet! Another idea we might have is to be see if legendary Pokémons
+have a higher overall total points. We could do this with the
+<code>mutate</code> function.</p>
+<pre class="r"><code>pokemon &lt;- pokemon %&gt;% mutate(total = rowSums(.[5:10]))
+
+# Always good practice to check if the function is doing what we want
+
+colnames(pokemon) # Check if the total variable is created
+sum(pokemon[1, 5:10]) # Sum columns 5 to 10 of row 1
+pokemon$total[1] # This should equal to the new variable we created </code></pre>
+<p>Notice the dot <code>.</code> in the mutate function. The
+<code>.</code> function is equivalent to saying
+<code>rowsums(pokemon[5:10])</code>. But isn’t this the whole point of
+using the pipe operator — to avoid this hassle?</p>
+<p>Recall what the pipe function does. It takes the output of the LHS
+(left hand side) of the function and passes it to the RHS (right hand
+side).</p>
+<p>However, some functions work better at “understanding” dataframes,
+while others work better at interpreting one dimensional vectors. The
+sum function is used to add up everything in a one dimension vector – as
+we saw in our very first example when I asked you to create a vector
+adding up <code>a+b</code>. But recall that from the pipe function,
+we’re feeding in a dataframe, not a specific column.</p>
+<p>The take-home message here is to understand the general idea behind
+what a function is doing — and leave the nut and bolts idiosyncrasies to
+Google or Stackoverflow. We will be introducing the
+<code>group_by</code> function in a bit that makes life easier, but just
+to finish up with the example:</p>
+<pre class="r"><code>onlyLegendary &lt;- pokemon %&gt;% filter(legendary == &quot;TRUE&quot;) %&gt;% {sum(.$total)}/65
+notLegendary &lt;- pokemon %&gt;% filter(legendary == &quot;FALSE&quot;) %&gt;% {sum(.$total)}/(800-65)</code></pre>
+<p>Again, the use of curly brackets <code>{}</code> is related to
+telling the computer how to parse the data and is specific to the
+function. So be careful when piping!</p>
+<p>Okay, let me drop the <code>total</code> column just to make things
+like it was. We can use the <code>select</code> function.</p>
+<pre class="r"><code>pokemon &lt;- pokemon %&gt;% select(-total)</code></pre>
+<p>In this case, the <code>-</code> sign means that we are removing a
+variable. Of course, you could also do this by writing out
+<code>pokemon %&gt;% select(type1, type2, HP, Attack, Defense ...)</code>,
+but that would be very tedious.</p>
+<p>To summarize what we’ve learnt:</p>
+<table>
+<colgroup>
+<col width="28%" />
+<col width="71%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>filter( )</td>
+<td>Subsetting a dataset</td>
+</tr>
+<tr class="even">
+<td>arrange( )</td>
+<td><a
+href="https://www.datasciencemadesimple.com/sorting-dataframe-r-using-dplyr/">Sorting</a>
+a dataset</td>
+</tr>
+<tr class="odd">
+<td>select( )</td>
+<td>Dropping variables in a dataset</td>
+</tr>
+<tr class="even">
+<td>rename( )</td>
+<td>Renaming variables in a datset</td>
+</tr>
+<tr class="odd">
+<td>mutate( )</td>
+<td>Creating a new variable</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="collapsing-data" class="section level3">
+<h3>Collapsing Data</h3>
 </div>
 
 
