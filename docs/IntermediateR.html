@@ -743,29 +743,42 @@ the middle (i.e., columns 1-6 on one dataframe, and columns 7-12 on
 another), which you should all be able to do by now.</p>
 <pre class="r"><code>pokemon_left &lt;- pokemon[, 1:6]
 pokemon_right &lt;- pokemon[, 7:12]</code></pre>
-<p>Great. Now the left side of the table (i.e., the side containing
-column 1) also has the variable <code>id</code> in it. Let’s create an
-artificial <code>num</code> variable (which corresponds to the Pokemon
-ID) for the right column.</p>
-<pre class="r"><code># Creating a new column called id for Pokemon_right
-pokemon_right$num = 1:nrow(pokemon_right)
+<p>Great. Let’s create an artificial <code>num_left</code> variable
+(which corresponds to the index) for the left column, and an artificial
+<code>num_right</code> variable (which corresponds to the index) for the
+right column. Note that we cannot use the <code>id</code> column because
+some of the numbers are repeated (for instance, Mega Venusaur and
+Venusaur have the same Pokedex ID)</p>
+<pre class="r"><code># Creating a new column called num_right for Pokemon_left
+pokemon_left$num_left = 1:nrow(pokemon_left)
+
+# Creating a new column called num_right for Pokemon_right
+pokemon_right$num_right = 1:nrow(pokemon_right)
 
 # Rearrange columns so that ID is on the first column 
 pokemon_right &lt;- pokemon_right[, c(7,1:6)] # Equivalent to saying c(7,1,2,3,4,5,6)
-head(pokemon_right, n= 2)</code></pre>
+pokemon_left &lt;- pokemon_left[, c(7,1:6)] # Equivalent to saying c(7,1,2,3,4,5,6)
+head(pokemon_left, n= 2)</code></pre>
 <pre><code>## # A tibble: 2 × 7
-##     num Defense `Sp. Atk` `Sp. Def` Speed Generation legendary
-##   &lt;int&gt;   &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt; &lt;lgl&gt;    
-## 1     1      49        65        65    45          1 FALSE    
-## 2     2      63        80        80    60          1 FALSE</code></pre>
+##   num_left    id Name      type1 type2     HP Attack
+##      &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt; &lt;chr&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+## 1        1     1 Bulbasaur Grass Poison    45     49
+## 2        2     2 Ivysaur   Grass Poison    60     62</code></pre>
+<pre class="r"><code>head(pokemon_right, n= 2)</code></pre>
+<pre><code>## # A tibble: 2 × 7
+##   num_right Defense `Sp. Atk` `Sp. Def` Speed Generation legendary
+##       &lt;int&gt;   &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt; &lt;lgl&gt;    
+## 1         1      49        65        65    45          1 FALSE    
+## 2         2      63        80        80    60          1 FALSE</code></pre>
 <p>We will call on the <code>merge</code> function — which is equvialent
 to a left_join in the database langauge SQL. Here’s a diagram of what a
 merge/left_join looks like:</p>
 <center>
 <img src="https://www.sqltutorial.org/wp-content/uploads/2016/03/SQL-LEFT-JOIN.png" style = "width: 500px; height: 200px;">
 </center>
-<pre class="r"><code>pokemon_merge &lt;- merge(pokemon_left, pokemon_right, by.x = &quot;id&quot;, by.y = &quot;num&quot;)
-# x represents the &#39;left&#39; dataset, y represents the &#39;right&#39; dataset</code></pre>
+<pre class="r"><code>pokemon_merge &lt;- merge(pokemon_left, pokemon_right, by.x = &quot;num_left&quot;, by.y = &quot;num_right&quot;) %&gt;% select(-num_left)
+# x represents the &#39;left&#39; dataset, y represents the &#39;right&#39; dataset
+# Remove the artifical column num_left</code></pre>
 <p>Just as another quick practice, we can use create a new dataframe
 with just the total score, and add in the Pokemon number (which we call
 <code>num</code>):</p>
@@ -791,16 +804,22 @@ possibility is that the rows that are missing from
 with the <code>pokemon</code> dataset (i.e., the final number of rows
 will be equal to <code>pokemon</code>)</p>
 <p>We can execute scenario 1 by setting the <code>all.x</code> argument
-as FALSE, and execute scenario 2 by setting <code>all.x</code> as
-TRUE.</p>
-<pre class="r"><code>pokemon_merge_total_1 &lt;- merge(pokemon, pokemon_total, by.x = &quot;id&quot;, by.y = &quot;num&quot;, all.x = FALSE)
+as FALSE, and execute scenario 2 by setting <code>all.x</code> as TRUE.
+When we set <code>by.x = 0</code> we are merging it by the index of
+<code>pokemon</code> (recall that previously we set up an artificial new
+index column – this circumvents the need to do that). However, extra
+caution needs to be paid attention as the order gets mixed up when
+merging.</p>
+<pre class="r"><code>pokemon_merge_total_1 &lt;- merge(pokemon, pokemon_total, by.x = 0, by.y = &quot;num&quot;, all.x = FALSE) %&gt;% arrange(id)
+#Sometimes merging messes up the datatable ordering -- so we use the arrange function to sort it by id based on ascending order
 
 dim(pokemon_merge_total_1)</code></pre>
-<pre><code>## [1] 796  13</code></pre>
-<pre class="r"><code>pokemon_merge_total_2 &lt;- merge(pokemon, pokemon_total, by.x = &quot;id&quot;, by.y = &quot;num&quot;, all.x = TRUE)
+<pre><code>## [1] 797  14</code></pre>
+<pre class="r"><code>pokemon_merge_total_2 &lt;- merge(pokemon, pokemon_total, by.x = 0, by.y = &quot;num&quot;, all.x = TRUE) %&gt;% arrange(id)
+#Sometimes merging messes up the datatable ordering -- so we use the arrange function to sort it by id based on ascending order
 
 dim(pokemon_merge_total_2)</code></pre>
-<pre><code>## [1] 800  13</code></pre>
+<pre><code>## [1] 800  14</code></pre>
 <p><span class="math inline">\(\underline{Acknowledgements}\)</span></p>
 <p>For this tutorial, I relied partly on <a
 href="https://sejdemyr.github.io">Simon Ejdemyr’s</a> wonderful R
