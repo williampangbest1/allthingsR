@@ -1,7 +1,7 @@
 ---
 title: "Intermediate R Workshop"
 author: "Presented by William Pang"
-date: "6/2/2022"
+date: "6/9/2022"
 output: html_document
 ---
 
@@ -253,7 +253,7 @@ Recall what the pipe function does. It takes the output of the LHS (left hand si
 
 However, some functions work better at "understanding" dataframes, while others work better at interpreting one dimensional vectors. The sum function is used to add up everything in a one dimension vector -- as we saw in our very first example when I asked you to create a vector adding up `a+b`.  But recall that from the pipe function, we're feeding in a dataframe, not a specific column. 
 
-The take-home message here is to understand the general idea behind what a function is doing — and leave the nut and bolts idiosyncrasies to Google or Stackoverflow. We will be introducing the `group_by` function in a bit that makes life easier, but just to finish up with the example:
+The take-home message here is to understand the general idea behind what a function is doing — and leave the nuts and bolts idiosyncrasies to Google or Stackoverflow. We will be introducing the `group_by` function in a bit that makes life easier, but just to finish up with the example:
 
 ```{r}
 onlyLegendary <- pokemon %>% filter(legendary == "TRUE") %>% {sum(.$total)}/65
@@ -286,11 +286,118 @@ cat(tabl) # output the table in a format good for HTML/PDF/docx conversion
 ```
 
 ### Collapsing Data
+We've covered quite a bit of functions so far, but perhaps the most important one in the `dplyr` package is the `group_by` function. Okay, let's try again to get some summary statistics on legendary Pokémons.
 
+```{r}
+pokemon %>% 
+  group_by(legendary) %>%
+  summarize(count= n(), HP = mean(HP), Attack = mean(Attack), Defense = mean(Defense))
+```
+As the name suggests, the `group_by` function takes a table, segments it, and then performs operations based on the specified groups. It's a bit hard to explain in words, so I hope that this diagram from [Claudia A Engel](https://cengel.github.io/R-data-wrangling/) will help. 
 
+```{r, echo=FALSE}
+# Define variable containing url
+url <- "https://cengel.github.io/R-data-wrangling/img/split-apply-combine.png"
+```
+<center><img src="`r url`" style = "width: 500px; height: 400px;"></center>
 
+Let's walk through what just happened in the above function. First, the `group_by` function "split" the dataset into two sets, if you will — a [735 x 12] set and a [65 x 12] dataframe. Then, we ran a `n()` function, which counts the rows in each of the "split" dataset. The `mean()` operation was then performed on the split dataset to calculate the mean HP for legendary and nonlegendary Pokémons, as well as the mean Attack points.
 
+Cool! This is a really important function, because it has saved us a lot of time and hassle! 
 
+We can also use `group_by` with multiple arguments, such as grouping by the type of Pokémons and whether it's legendary or not. Recall from our previous hypothesis (with the help of Google) that we think there's something interesting going on with Psychic Pokémons.
 
+```{r, message = FALSE}
+psychic <- pokemon %>% 
+  group_by(type1, legendary) %>%
+  summarize(count= n(), HP = mean(HP), Attack = mean(Attack), Defense = mean(Defense))
 
+# To just output Psychic Pokemons
+psychic[psychic$type1 == "Psychic", ]
+```
 
+Since we're only interested in comparing legendary Psychic Pokémons vs nonlegendary Psychic Pokémons, we could use the `filter` function as well.
+
+```{r}
+  pokemon %>% 
+  filter(type1 == "Psychic") %>%
+  group_by(legendary) %>%
+  summarize(count= n(), HP = mean(HP), Attack = mean(Attack), Defense = mean(Defense))
+```
+
+Nice! And again, if we wanted to add up all the stats and find the mean, `summarize` is particular helpful because we can use the `mean` function as one of its arguments (try redoing the previous pipe, `onlyLegendary <- pokemon %>% filter(legendary == "TRUE") %>% mean(total)` with `mean(total)` — spoiler, it will not work).
+
+```{r}
+ pokemon %>%
+  mutate(total = rowSums(.[5:10])) %>%
+  group_by(legendary) %>%
+  summarize(count = n(), avg = mean(total))
+```
+
+### Joining Tables
+Before we end the tutorial, I want to leave you with one last skill — which is to join two tables together! Let us split the table right in the middle (i.e., columns 1-6 on one dataframe, and columns 7-12 on another), which you should all be able to do by now.
+
+```{r}
+pokemon_left <- pokemon[, 1:6]
+pokemon_right <- pokemon[, 7:12]
+```
+
+Great. Now the left side of the table (i.e., the side containing column 1) also has the variable `id` in it. Let's create an artificial `num` variable (which corresponds to the Pokemon ID) for the right column.
+
+```{r}
+# Creating a new column called id for Pokemon_right
+pokemon_right$num = 1:nrow(pokemon_right)
+
+# Rearrange columns so that ID is on the first column 
+pokemon_right <- pokemon_right[, c(7,1:6)] # Equivalent to saying c(7,1,2,3,4,5,6)
+head(pokemon_right, n= 2)
+``` 
+
+We will call on the `merge` function — which is equvialent to a left_join in the database langauge SQL. Here's a diagram of what a merge/left_join looks like:
+
+```{r, echo=FALSE}
+# Define variable containing url
+url2 <- "https://www.sqltutorial.org/wp-content/uploads/2016/03/SQL-LEFT-JOIN.png"
+```
+<center><img src="`r url2`" style = "width: 500px; height: 200px;"></center>
+
+```{r}
+pokemon_merge <- merge(pokemon_left, pokemon_right, by.x = "id", by.y = "num")
+# x represents the 'left' dataset, y represents the 'right' dataset
+```
+
+Just as another quick practice, we can use create a new dataframe with just the total score, and add in the Pokemon number (which we call `num`):
+
+```{r}
+pokemon_total = pokemon %>%
+  mutate(total = rowSums(.[5:10])) %>%
+  select(total) %>%
+  mutate(num = 1:800)
+```
+
+To spice things up, let's remove three rows from the dataset and then merge with the `pokemon` dataframe.
+
+```{r}
+pokemon_total <- pokemon_total[-c(1,2,3), ]
+
+# Always good to check if a function was executed properly
+dim(pokemon_total)
+```
+
+So the first three rows are missing, which means that the dimensions of the left table and the right table are not the same. Well, it could be one of two scenarios. The first scenario is that the after merging, rows that are missing from the `pokemon_total` dataset is also removed from the `pokemon` dataset (i.e., the final number of rows will be equal to `pokemon_total`). The second possibility is that the rows that are missing from `pokemon_total` are marked as `NA` when merged with the `pokemon` dataset (i.e., the final number of rows will be equal to `pokemon`)
+
+We can execute scenario 1 by setting the `all.x` argument as FALSE, and execute scenario 2 by setting `all.x` as TRUE.
+
+```{r}
+pokemon_merge_total_1 <- merge(pokemon, pokemon_total, by.x = "id", by.y = "num", all.x = FALSE)
+
+dim(pokemon_merge_total_1)
+
+pokemon_merge_total_2 <- merge(pokemon, pokemon_total, by.x = "id", by.y = "num", all.x = TRUE)
+
+dim(pokemon_merge_total_2)
+```
+
+$\underline{Acknowledgements}$
+
+For this tutorial, I relied partly on [Simon Ejdemyr's](https://sejdemyr.github.io) wonderful R tutorials that he has written up. I also took some inspiration from Claudia Engel's [Data Wrangling with R](https://cengel.github.io/R-data-wrangling/dplyr.html#joining-two-tables) series. Finally, inspiration for using the Pokemon dataset was from Keith Galli's [Youtube](https://www.youtube.com/watch?v=vmEHCJofslg) python tutorial on data science.
