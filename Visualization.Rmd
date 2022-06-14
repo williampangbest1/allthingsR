@@ -323,5 +323,6 @@ Lastly, you can do a small touch of customization to the facet wrapped graphs us
 p + theme_bw()
 ```
 
-$\underline{Acknowledgements}$
+$\underline{Acknowledgements}$ 
+
 As mentioned in the preamble, I relied mainly on [Claudia Engel's ](https://profiles.stanford.edu/claudia-engel) R tutorial [series](https://cengel.github.io/R-data-viz/). Another useful resource I found was Thomas Lin Pedersen's two-part Youtube [tutorial](https://youtu.be/h29g21z0a68), which helped lay a theoretical foundation on the syntax logic behind ``ggplot``. 
