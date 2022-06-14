@@ -1,0 +1,27 @@
+---
+title: "Visualization with ggplot"
+author: "Presented by William Pang"
+date: '2022-06-15'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+# Needed for R Markdown
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+
+# Needed for workshop code
+library(readr) # Used to read .rds files -- remember to install the package!
+library(tidyverse)
+```
+
+Welcome to the second part of this workshop series, where we will be covering data visualization using a tool called `ggplot`, which is part of the `tidyverse` package. When I first learnt `ggplot` on my own, I was quite confused — I came from coding in MATLAB, which was very literal (for instance, if you wanted to plot a sine wave with the equation `x = sin(t)`, it was simply `plot(t,x)`.  
+
+The point of me saying all of this is that if you want to express more complicated ideas, being literal sometimes does not cut it. If a good novel only included terse very manner-of-fact dialogues, you would immediately drop down the book. Akin to English, we need a set of rules, a structure of sorts that helps build up a language. This set of "rules" is called grammar, and as you will notice with `ggplot`, there are a lot of idiosyncrasies that might require some blind faith in the beginning, but upon mastery you will begin to see the power of `ggplot`. 
+
+Okay, with that being said, let's load the dataset. 
+
+```{r}
+data_path <- "/Users/williampang/Desktop/yg821jf8611_tn_nashville_2020_04_01.rds"
+df <- read_rds(data_path)
+```

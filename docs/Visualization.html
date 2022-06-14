@@ -9,9 +9,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
+<meta name="author" content="Presented by William Pang" />
 
+<meta name="date" content="2022-06-15" />
 
-<title>about.knit</title>
+<title>Visualization with ggplot</title>
 
 <script src="site_libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -276,19 +278,31 @@ $(document).ready(function () {
 
 
 
+<h1 class="title toc-ignore">Visualization with ggplot</h1>
+<h4 class="author">Presented by William Pang</h4>
+<h4 class="date">2022-06-15</h4>
 
 </div>
 
 
-<ul>
-<li><a href="IntermediateR.html">Intermediate R</a> (June 8, 2022 <a
-href="https://marx.library.yale.edu/data-gis-statlab/statlab">Yale Stat
-Lab</a> Workshop)</li>
-<li><a href="Visualization.html">Visualization</a> (June 8, 2022 <a
-href="https://marx.library.yale.edu/data-gis-statlab/statlab">Yale Stat
-Lab</a>, Workshop), dataset can be downloaded <a
-href="https://openpolicing.stanford.edu/data/">here</a></li>
-</ul>
+<p>Welcome to the second part of this workshop series, where we will be
+covering data visualization using a tool called <code>ggplot</code>,
+which is part of the <code>tidyverse</code> package. When I first learnt
+<code>ggplot</code> on my own, I was quite confused — I came from coding
+in MATLAB, which was very literal (for instance, if you wanted to plot a
+sine wave with the equation <code>x = sin(t)</code>, it was simply
+<code>plot(t,x)</code>.</p>
+<p>The point of me saying all of this is that if you want to express
+more complicated ideas, being literal sometimes does not cut it. If a
+good novel only included terse very manner-of-fact dialogues, you would
+immediately drop down the book. Akin to English, we need a set of rules,
+a structure of sorts that helps build up a language. This set of “rules”
+is called grammar, and as you will notice with <code>ggplot</code>,
+there are a lot of idiosyncrasies that might require some blind faith in
+the beginning, but upon mastery you will begin to see the power of
+<code>ggplot</code>.</p>
+<pre class="r"><code> data_path &lt;- &quot;/Users/williampang/Desktop/yg821jf8611_tn_nashville_2020_04_01.rds&quot;
+df &lt;- read_rds(data_path)</code></pre>
 
 
 
