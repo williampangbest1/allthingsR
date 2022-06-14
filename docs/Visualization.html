@@ -285,24 +285,139 @@ $(document).ready(function () {
 </div>
 
 
+<p><em>This workshop mostly follows a wonderful <a
+href="https://cengel.github.io/R-data-viz/">tutorial</a> created by <a
+href="https://profiles.stanford.edu/claudia-engel">Claudia Engel</a>, an
+academic technology specialist and lecturer in Anthropology at Stanford
+University.</em></p>
 <p>Welcome to the second part of this workshop series, where we will be
 covering data visualization using a tool called <code>ggplot</code>,
 which is part of the <code>tidyverse</code> package. When I first learnt
 <code>ggplot</code> on my own, I was quite confused — I came from coding
 in MATLAB, which was very literal (for instance, if you wanted to plot a
-sine wave with the equation <code>x = sin(t)</code>, it was simply
-<code>plot(t,x)</code>.</p>
+sine wave with the equation <code>y = sin(t)</code>, it was simply
+<code>plot(t,y)</code>.</p>
 <p>The point of me saying all of this is that if you want to express
 more complicated ideas, being literal sometimes does not cut it. If a
 good novel only included terse very manner-of-fact dialogues, you would
-immediately drop down the book. Akin to English, we need a set of rules,
-a structure of sorts that helps build up a language. This set of “rules”
+immediately drop the book. Akin to English, we need a set of rules, a
+structure of sorts that helps build up a language. This set of “rules”
 is called grammar, and as you will notice with <code>ggplot</code>,
 there are a lot of idiosyncrasies that might require some blind faith in
 the beginning, but upon mastery you will begin to see the power of
 <code>ggplot</code>.</p>
-<pre class="r"><code> data_path &lt;- &quot;/Users/williampang/Desktop/yg821jf8611_tn_nashville_2020_04_01.rds&quot;
-df &lt;- read_rds(data_path)</code></pre>
+<p>Today, we’ll be working with a dataset from the <a
+href="https://openpolicing.stanford.edu">Stanford Open Policing
+Project</a>, a project that gathers data across the country on traffic
+stops made by police officers. In particular, we’ll be looking at police
+stops in Missippi.</p>
+<p>We should now know how to read files from our last tutorial, where we
+introduced the <code>read_csv</code> function.</p>
+<pre class="r"><code>bias &lt;- read_csv(&quot;https://raw.githubusercontent.com/cengel/R-data-viz/master/data/MS_stops_by_county.csv&quot;)</code></pre>
+<pre><code>## Rows: 82 Columns: 10
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (2): county_name, bias
+## dbl (8): county_fips, driver_race_Black, driver_race_White, black_pop, white...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<p>It’s always a good habit to do a quick scan of the data to
+contextualize what’s happening.</p>
+<pre class="r"><code>head(bias, n = 2)</code></pre>
+<p>What’s we’re looking at is a dataset of policing by counties in
+Mississippi, with some statistics about the number of black and white
+drivers being pulled over. The obvious research question to ask from
+this dataset is whether there is any racial bias in police stopping –
+perhaps we want to plot some sort of scatterplot comparing the percent
+of black stopped vs percent of white stopped.</p>
+<p>Before we jump into the coding, the first thing to know about
+<code>ggplot</code> is that it works in layers, sort of like a cake! The
+bottom layer is your data, and you can layers things on top to make an
+increasingly sophisticated graph.</p>
+<center>
+<img src="https://englelab.gatech.edu/useRguide/images/dataviz/ge_themes.png" style = "width: 200px; height: 200px;">
+</center>
+<p>As mentioned, the “base” of your cake is the data.</p>
+<div id="dataaesthetics-layer" class="section level3">
+<h3>Data/Aesthetics Layer</h3>
+<pre class="r"><code>ggplot(data = bias)</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>If you just plotted this and pressed run, you will be greeted by a
+grey screen on the R-studio plot. That’s good! We’ve set the “base” for
+the cake.</p>
+<p>Okay, let’s start adding an argument called <code>aes</code>.
+<code>aes</code> refers to aesthetic mapping, which is the idea of
+linking variables in the data to graphical properties in the geometry.
+If you’re working in a cartesian coordinate system, for example, this
+tells us where the datapoint links exactly on the plane.</p>
+<p>Let’s add a few more arguments.</p>
+<pre class="r"><code>ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped))</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>Two things here. First, notice that our arguments for the x and y
+axis (i.e., <code>pct_black_stopped</code> and
+<code>pct_white_stopped</code>) do not have quotation marks on it. This
+shouldn’t come as a surprise to us, especially for those who joined my
+session last week on Intermediate R, where we introduced the pipe
+operator. Remember that <code>ggplot</code> is under the
+<code>tidyverse</code> universe (no pun intended), similar to how
+<code>dplyr</code> is part of the <code>tidyverse</code> universe.</p>
+</div>
+<div id="geometries-layer" class="section level3">
+<h3>Geometries Layer</h3>
+<p>The second question you might ask is “where is my data”? Again,
+remember we’ve just <em>mapped</em> the data onto the plane, but we
+haven’t told <code>ggplot</code> what the graph we want. This is where
+the fancy stuff begins to come into play. For a scatterplot, where we
+just want dots or points on the graph, we use the function
+<code>geom_point()</code>.</p>
+<pre class="r"><code>ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped)) +
+  geom_point()</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Notice the <code>+</code> sign that we had to use, which means that
+we’re adding an additional layer to our “cake”. One thing to note is
+that the <code>+</code> must be added on the same line of your layer –
+if you did something like this, for example, it would not work:</p>
+<pre class="r"><code># This does not work
+
+ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped)) 
+  + geom_point()</code></pre>
+<p>It also doesn’t really matter if the <code>aes</code> argument goes
+into the base layer or the geometries layer.</p>
+<pre class="r"><code>ggplot(data = bias) +
+  geom_point(aes(x = pct_black_stopped, y = pct_white_stopped))</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>However, for consistency (and readability), we will stick with
+putting the <code>aes</code> argument in the data layer.</p>
+<p>You can play around with the <code>geom_point</code> argument — for
+instance, you don’t want circles on your graph, but want squares
+instead. And while we’re at it, you might think the squares are too
+dark, so you would like to change the opacity (what a picky
+customer!).</p>
+<pre class="r"><code>ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped)) +
+  geom_point(shape = &#39;square&#39;, alpha = 0.3)</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p>Okay, let’s say we wanted to highlight the prevalence of stops among
+blacks by defining a threshold (e.g., more than 20% of black drivers
+were stopped in <a
+href="https://github.com/cengel/R-data-viz/tree/master/data">Mississippi
+between 2013-2016</a>).</p>
+<pre class="r"><code>ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped, color = pct_black_stopped &gt; 0.2)) + 
+  geom_point()</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>You might have initially thought that the <code>color</code> argument
+would go into the geometries layer. However, this is not the case,
+because what we’re actually doing is creating a new column in our
+dataset, creating a TRUE/FALSE statement (i.e., whether the percent of
+blacks stopepd is greater than 0.2), and then mapping it onto the plane
+using the <code>geom_point</code> function.</p>
+<p>However, if we wanted to change something about the properties of the
+dots themselves (say we wanted to change the color), we would put our
+arguments into the <code>geom_point</code> function.</p>
+<pre class="r"><code>ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped)) +
+  geom_point(color = &#39;steelblue&#39;)</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+</div>
 
 
 
