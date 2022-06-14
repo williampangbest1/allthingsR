@@ -90,15 +90,8 @@ You can play around with the `geom_point` argument — for instance, you don't w
 
 ```{r}
 ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped)) +
-  geom_point(shape = 'square', alpha = 0.3) 
-  # Notice that we need to put quotations on 'square', as the argument 'square' is not piped from our dataset
+  geom_point(shape = 'square', alpha = 0.3) # Notice that we need to put quotations on 'square', as the argument 'square' is not piped from our dataset
 ```
-
-```{r}
-ggplot(data = bias) +
-  geom_point(aes(x = pct_black_stopped, y = pct_white_stopped))
-```
-
 Anyway, let's get back to our original research question, which is to see if there is any bias in police stops. To do this, we should plot a 45$^\circ$ degree reference line (or a slope of m = 1 because y = x) on the scatterplot. If the dots fall on the reference line, this means that there is no bias (e.g., in a county where 30% of whites are stopped and 30% of blacks are also stopped, the dot would fall on the reference line). 
 
 We can achieve this with the `geom_abline` function, which draws a line from a to b.
@@ -188,7 +181,7 @@ ggplot(bias, aes(x = reorder(county_name, -wb_delta), y = wb_delta)) +
   geom_col() + 
   coord_flip()
 ```
-Before I forget to mention, we could also simply the code a bit (which I should have done previously, but for illustrative purposes I copied everything out) by assigning everything before `geom_col()` to `p`.
+Before I forget to mention, we could also simplify the code a bit (which I should have done previously, but for illustrative purposes I copied everything out) by assigning everything before `geom_col()` to `p`.
 
 ```{r}
 p <- ggplot(bias, aes(x = reorder(county_name, -wb_delta), y = wb_delta)) +
@@ -196,15 +189,13 @@ p <- ggplot(bias, aes(x = reorder(county_name, -wb_delta), y = wb_delta)) +
 
 p + coord_flip()
 ```
-Okay, so I think we've exhausted this dataset a bit - let's work with an extension of this dataset which we will call `reasons`.
+Okay, so I think we've exhausted this dataset  - let's work with an extension of the police stops dataset which we will call `reasons`.
 
 ```{r, results = 'hide'}
 reasons <- read_csv("https://github.com/cengel/R-data-viz/raw/master/data/MS_stops.csv")
 ```
 
 Again, it's a good habit to look at both the `spec` output from `read_csv` and some techniques I covered last week to get a good overview of the data.
-
-It's always a good habit to do a quick scan of the data to contextualize what's happening.
 
 ```{r, results = 'hide'}
 head(reasons, n = 2)
@@ -237,7 +228,7 @@ ggplot(data = reasons, aes(x = violation)) +
   geom_bar(fill = "green")
 ```
 
-But just changing the colors is not that insightful. Say, for instance, we wanted to know how many of speeding violations, for instance, were incurred by whites compared to blacks. 
+But just changing the colors is not that insightful. Say, for instance, we wanted to know how many of speeding violations were incurred by whites compared to blacks. 
 
 ```{r}
 ggplot(data = reasons, aes(x = violation)) + 
@@ -259,4 +250,78 @@ ggplot(data = reasons, aes(x = violation)) +
   geom_bar(aes(fill = driver_gender), position = "fill")
 ```
 
-Last but not the least, I'll introduce everyone to `facet_wrap`. As you can tell, I always save the best for last, as this is a very powerful function. What faceting essentially does is split one plot into multiple smaller plots, making the plot less confusing and easier to interpret for the reader.
+We'll now do a gear shift into plotting time series data, which is dear and near to me as I've worked on analyzing COVID datasets. In this example, we're interested in knowing what the type of violations occur on a given day of the week. 
+
+To do so, we want to split our datasets into days of the week, and then split that dataset based on violations. We should now be familiar with the handy `group_by` function.
+
+```{r}
+dow_violations <- reasons %>% 
+  group_by(wk_day, violation) %>% 
+  count()
+
+head(dow_violations, n=2)
+```
+
+Now, let's try plotting it out.
+
+```{r}
+ggplot(dow_violations, aes(x = wk_day, y = n)) +
+  geom_line()
+```
+Woah! This wasn't what we wanted! What happened here is that `ggplot` displayed the range of values for each day of the week. Let's fix this by adding the `group` argument.
+
+```{r}
+ggplot(dow_violations, aes(x = wk_day, group = violation, y = n)) +
+  geom_line()
+```
+
+That's better. But we don't know which line corresponds to which violation. To do so, we need to use the `color` function.
+
+```{r}
+ggplot(dow_violations, aes(x = wk_day, group = violation, y = n, color = violation)) +
+  geom_line()
+```
+If you notice the days of the week, they are a bit messed up. As we've seen a few times before, R usually arranges categorical variables (even date class) by alphabetical order. To fix this problem, we need to manually specify what the order should be by forcing it as a `factor`. Remember that whenever you need variables to be arranged in a particular order, use factors as factors not only store the variables of interest, but assigns an index to them.
+
+```{r}
+dow_violations$wk_day <- factor(dow_violations$wk_day, 
+                       levels=c("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"))
+```
+
+Let's give this another try.
+
+```{r}
+ggplot(dow_violations, aes(x = wk_day, group = violation, y = n, color = violation)) +
+  geom_line()
+```
+
+This is a great segue to `facet_wrap`, our last subject of the day. Imagine you wanted separate panels for each violation classification. What faceting essentially does is split one big plot into multiple smaller plots, making the plot less confusing and easier to interpret for the viewer.
+
+Let's use the `facet_wrap` function.
+
+```{r}
+ggplot(dow_violations, aes(x = wk_day, y = n, group = violation)) +
+     geom_line() +
+     facet_wrap(~ violation)
+```
+Notice the `~` tilde. The tilde can be read as "by" - semantically, this would be equivalent to [saying](https://bookdown.org/yih_huynh/Guide-to-R-Book/facet-wrapping.html) "I want to make new graphs separated by the cut categories". 
+
+We can force the facet wrap to have 2 columns, i.e., a 2x3 grid. Let's also rename the `y` label to something else other than n and remove the `x` label because the day of week is pretty intutive.
+
+```{r}
+p <- ggplot(dow_violations, aes(x = wk_day, y = n, group = violation)) +
+     geom_line() +
+     facet_wrap(~ violation, ncol = 2) +
+     labs(title = 'Observed violations per day of week',
+     x = "",   # Use "" to remove text on label
+     y = "Number of violations")
+```
+
+Lastly, you can do a small touch of customization to the facet wrapped graphs using different themes. 
+
+```{r}
+p + theme_bw()
+```
+
+$\underline{Acknowledgements}$
+As mentioned in the preamble, I relied mainly on [Claudia Engel's ](https://profiles.stanford.edu/claudia-engel) R tutorial [series](https://cengel.github.io/R-data-viz/). Another useful resource I found was Thomas Lin Pedersen's two-part Youtube [tutorial](https://youtu.be/h29g21z0a68), which helped lay a theoretical foundation on the syntax logic behind ``ggplot``. 

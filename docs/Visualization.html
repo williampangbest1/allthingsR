@@ -388,13 +388,9 @@ instance, you don’t want circles on your graph, but want squares
 instead. And while we’re at it, you, the picky customer, might think the
 squares are too dark, so you would like to change the opacity.</p>
 <pre class="r"><code>ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped)) +
-  geom_point(shape = &#39;square&#39;, alpha = 0.3) </code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-<pre class="r"><code>  # Notice that we need to put quotations on &#39;square&#39;, as the argument &#39;square&#39; is not piped from our dataset</code></pre>
-<pre class="r"><code>ggplot(data = bias) +
-  geom_point(aes(x = pct_black_stopped, y = pct_white_stopped))</code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
-<p>Anyway, let’s get back to our original research question, which is to
+  geom_point(shape = &#39;square&#39;, alpha = 0.3) # Notice that we need to put quotations on &#39;square&#39;, as the argument &#39;square&#39; is not piped from our dataset</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+Anyway, let’s get back to our original research question, which is to
 see if there is any bias in police stops. To do this, we should plot a
 45<span class="math inline">\(^\circ\)</span> degree reference line (or
 a slope of m = 1 because y = x) on the scatterplot. If the dots fall on
@@ -406,7 +402,7 @@ draws a line from a to b.</p>
 <pre class="r"><code>ggplot(data = bias) +
   geom_point(aes(x = pct_black_stopped, y = pct_white_stopped)) +
   geom_abline(slope = 1, intercept = 0, color = &#39;red&#39;)</code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-11-1.png" width="672" />
+<p><img src="Visualization_files/figure-html/unnamed-chunk-10-1.png" width="672" />
 Hmmm, something seems to be off, as what I wanted was the line to cut
 diagonally on the plane. This is because the y and x axis are scaled
 differently - if we wanted the slope to cut diagonally, the two axis
@@ -419,7 +415,7 @@ argument.</p>
   scale_x_continuous(limits = c(0, 1)) +
   scale_y_continuous(limits = c(0, 1)) </code></pre>
 <pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>Let’s say we were doing some exploratory data analysis and wanted to
 see data points where less than 10% of white drivers were stopped. Let’s
 trying highlighting these data points by changing the color on our
@@ -430,7 +426,7 @@ graph.</p>
   scale_y_continuous(limits = c(0, 1)) +
   geom_point()</code></pre>
 <pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-13-1.png" width="672" />
+<p><img src="Visualization_files/figure-html/unnamed-chunk-12-1.png" width="672" />
 You might have initially thought that the <code>color</code> argument
 would go into the geometries layer. However, this is not the case,
 because what we’re doing is creating a new column in our dataset,
@@ -442,7 +438,7 @@ the dots themselves (say we wanted to change the color), we would put
 our arguments into the <code>geom_point</code> function.</p>
 <pre class="r"><code>ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped)) +
   geom_point(color = &#39;steelblue&#39;)</code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <p>Interesting! Just by visual inspection we see that there’s something
 interesting going on there, as a lot of points seem to be aggregated
 below the reference line. We can “zoom in” by tweaking
@@ -453,7 +449,7 @@ below the reference line. We can “zoom in” by tweaking
   scale_y_continuous(limits = c(0, 0.1)) +
   geom_point()</code></pre>
 <pre><code>## Warning: Removed 44 rows containing missing values (geom_point).</code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-15-1.png" width="672" />
+<p><img src="Visualization_files/figure-html/unnamed-chunk-14-1.png" width="672" />
 Here the <code>color</code> argument is redundant because we have scaled
 the axis in a way that would only capture <code>pct_white_stopped</code>
 to be &lt; 0.1. Notice that we also get a warning that some values are
@@ -474,14 +470,14 @@ positive <span class="math inline">\(\Delta\)</span> indicates a bias
 towards stopping whites.</p>
 <pre class="r"><code>ggplot(data = bias, aes(x = county_name, y = wb_delta)) + 
   geom_col()</code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
 <p>Clearly, we can’t distinguish one county from another country - it’s
 not readable at all. We can fix this problem by flipping the
 coordinates:</p>
 <pre class="r"><code>ggplot(data = bias, aes(x = county_name, y = wb_delta)) +
   geom_col() + 
   coord_flip()</code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <p>Since most people read from top to bottom, we might want to flip the
 ordering of <code>county_name</code> so that Adams County is on the
 bottom (or <em>further top of the screen</em> — but in graphics the
@@ -494,7 +490,7 @@ will not work if the x variable is continuous.</p>
   geom_col() + 
   coord_flip() +
   scale_x_discrete(limits = rev)</code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <p>Let’s try doing the same thing for the continuous variable
 <code>wb_delta</code>, which requires some knowledge of the
 idiosyncrasies of <code>ggplot</code> functions. Again, stackoverflow
@@ -503,25 +499,26 @@ and Google is your friend here.</p>
   geom_col() + 
   coord_flip() +
   scale_y_reverse(limits = c(1,-1)) # You could also just use scale_y_reverse() </code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-19-1.png" width="672" />
+<p><img src="Visualization_files/figure-html/unnamed-chunk-18-1.png" width="672" />
 We can also reorder the counties by the <code>wb_delta</code> values,
 from lowest (indicating black bias) to highest (indicating white
 bias).</p>
 <pre class="r"><code>ggplot(bias, aes(x = reorder(county_name, -wb_delta), y = wb_delta)) +
   geom_col() + 
   coord_flip()</code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-20-1.png" width="672" />
-Before I forget to mention, we could also simply the code a bit (which I
-should have done previously, but for illustrative purposes I copied
+<p><img src="Visualization_files/figure-html/unnamed-chunk-19-1.png" width="672" />
+Before I forget to mention, we could also simplify the code a bit (which
+I should have done previously, but for illustrative purposes I copied
 everything out) by assigning everything before <code>geom_col()</code>
 to <code>p</code>.</p>
 <pre class="r"><code>p &lt;- ggplot(bias, aes(x = reorder(county_name, -wb_delta), y = wb_delta)) +
   geom_col() 
 
 p + coord_flip()</code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-21-1.png" width="672" />
-Okay, so I think we’ve exhausted this dataset a bit - let’s work with an
-extension of this dataset which we will call <code>reasons</code>.</p>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-20-1.png" width="672" />
+Okay, so I think we’ve exhausted this dataset - let’s work with an
+extension of the police stops dataset which we will call
+<code>reasons</code>.</p>
 <pre class="r"><code>reasons &lt;- read_csv(&quot;https://github.com/cengel/R-data-viz/raw/master/data/MS_stops.csv&quot;)</code></pre>
 <pre><code>## Rows: 211211 Columns: 15
 ## ── Column specification ────────────────────────────────────────────────────────
@@ -535,15 +532,13 @@ extension of this dataset which we will call <code>reasons</code>.</p>
 <p>Again, it’s a good habit to look at both the <code>spec</code> output
 from <code>read_csv</code> and some techniques I covered last week to
 get a good overview of the data.</p>
-<p>It’s always a good habit to do a quick scan of the data to
-contextualize what’s happening.</p>
 <pre class="r"><code>head(reasons, n = 2)</code></pre>
 <p>Another way to get to know your data is to build a bar graph,
 especially when we’re working with categorical variables. This can be
 done with the <code>geom_bar</code> function.</p>
 <pre class="r"><code>ggplot(data = reasons, aes(x = violation)) + 
   geom_bar()</code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
 <p>Notice that we don’t need to specific a <code>y</code> argument for
 <code>aes</code>, which makes sense because we are trying to tabulate
 the different violation counts. What’s happening here is that the
@@ -560,18 +555,18 @@ interested in getting the percentage of each of the violations:</p>
 <pre class="r"><code># Convert to percentage
 ggplot(data = reasons, aes(x = violation, y = after_stat(count/ sum(count) * 100))) + 
   geom_bar()</code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 <p>We could also change the colors of the bar — but instead of using the
 <code>color</code> function, we can use <code>fill</code>.</p>
 <pre class="r"><code>ggplot(data = reasons, aes(x = violation)) + 
   geom_bar(fill = &quot;green&quot;)</code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
 <p>But just changing the colors is not that insightful. Say, for
-instance, we wanted to know how many of speeding violations, for
-instance, were incurred by whites compared to blacks.</p>
+instance, we wanted to know how many of speeding violations were
+incurred by whites compared to blacks.</p>
 <pre class="r"><code>ggplot(data = reasons, aes(x = violation)) + 
   geom_bar(aes(fill = driver_race))</code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
 <p>Here the <code>aes</code> function needs to be called again (i.e.,
 <code>geom_bar(fill = driver_race)</code> won’t work). This is similar
 to the earlier example, where we wanted to change the
@@ -586,12 +581,89 @@ by race.</p>
 <pre class="r"><code># Convert to percentage
 ggplot(data = reasons, aes(x = violation)) + 
   geom_bar(aes(fill = driver_gender), position = &quot;fill&quot;)</code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
-<p>Last but not the least, I’ll introduce everyone to
-<code>facet_wrap</code>. As you can tell, I always save the best for
-last, as this is a very powerful function. What faceting essentially
-does is split one plot into multiple smaller plots, making the plot less
-confusing and easier to interpret for the reader.</p>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
+<p>We’ll now do a gear shift into plotting time series data, which is
+dear and near to me as I’ve worked on analyzing COVID datasets. In this
+example, we’re interested in knowing what the type of violations occur
+on a given day of the week.</p>
+<p>To do so, we want to split our datasets into days of the week, and
+then split that dataset based on violations. We should now be familiar
+with the handy <code>group_by</code> function.</p>
+<pre class="r"><code>dow_violations &lt;- reasons %&gt;% 
+  group_by(wk_day, violation) %&gt;% 
+  count()
+
+head(dow_violations, n=2)</code></pre>
+<pre><code>## # A tibble: 2 × 3
+## # Groups:   wk_day, violation [2]
+##   wk_day violation             n
+##   &lt;chr&gt;  &lt;chr&gt;             &lt;int&gt;
+## 1 Fri    Breaks-Lights-etc   564
+## 2 Fri    Careless driving   1150</code></pre>
+<p>Now, let’s try plotting it out.</p>
+<pre class="r"><code>ggplot(dow_violations, aes(x = wk_day, y = n)) +
+  geom_line()</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-31-1.png" width="672" />
+Woah! This wasn’t what we wanted! What happened here is that
+<code>ggplot</code> displayed the range of values for each day of the
+week. Let’s fix this by adding the <code>group</code> argument.</p>
+<pre class="r"><code>ggplot(dow_violations, aes(x = wk_day, group = violation, y = n)) +
+  geom_line()</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+<p>That’s better. But we don’t know which line corresponds to which
+violation. To do so, we need to use the <code>color</code> function.</p>
+<pre class="r"><code>ggplot(dow_violations, aes(x = wk_day, group = violation, y = n, color = violation)) +
+  geom_line()</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-33-1.png" width="672" />
+If you notice the days of the week, they are a bit messed up. As we’ve
+seen a few times before, R usually arranges categorical variables (even
+date class) by alphabetical order. To fix this problem, we need to
+manually specify what the order should be by forcing it as a
+<code>factor</code>. Remember that whenever you need variables to be
+arranged in a particular order, use factors as factors not only store
+the variables of interest, but assigns an index to them.</p>
+<pre class="r"><code>dow_violations$wk_day &lt;- factor(dow_violations$wk_day, 
+                       levels=c(&quot;Mon&quot;, &quot;Tue&quot;, &quot;Wed&quot;, &quot;Thu&quot;, &quot;Fri&quot;, &quot;Sat&quot;, &quot;Sun&quot;))</code></pre>
+<p>Let’s give this another try.</p>
+<pre class="r"><code>ggplot(dow_violations, aes(x = wk_day, group = violation, y = n, color = violation)) +
+  geom_line()</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
+<p>This is a great segue to <code>facet_wrap</code>, our last subject of
+the day. Imagine you wanted separate panels for each violation
+classification. What faceting essentially does is split one big plot
+into multiple smaller plots, making the plot less confusing and easier
+to interpret for the viewer.</p>
+<p>Let’s use the <code>facet_wrap</code> function.</p>
+<pre class="r"><code>ggplot(dow_violations, aes(x = wk_day, y = n, group = violation)) +
+     geom_line() +
+     facet_wrap(~ violation)</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-36-1.png" width="672" />
+Notice the <code>~</code> tilde. The tilde can be read as “by” -
+semantically, this would be equivalent to <a
+href="https://bookdown.org/yih_huynh/Guide-to-R-Book/facet-wrapping.html">saying</a>
+“I want to make new graphs separated by the cut categories”.</p>
+<p>We can force the facet wrap to have 2 columns, i.e., a 2x3 grid.
+Let’s also rename the <code>y</code> label to something else other than
+n and remove the <code>x</code> label because the day of week is pretty
+intutive.</p>
+<pre class="r"><code>p &lt;- ggplot(dow_violations, aes(x = wk_day, y = n, group = violation)) +
+     geom_line() +
+     facet_wrap(~ violation, ncol = 2) +
+     labs(title = &#39;Observed violations per day of week&#39;,
+     x = &quot;&quot;,   # Use &quot;&quot; to remove text on label
+     y = &quot;Number of violations&quot;)</code></pre>
+<p>Lastly, you can do a small touch of customization to the facet
+wrapped graphs using different themes.</p>
+<pre class="r"><code>p + theme_bw()</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-38-1.png" width="672" /></p>
+<p><span class="math inline">\(\underline{Acknowledgements}\)</span> As
+mentioned in the preamble, I relied mainly on <a
+href="https://profiles.stanford.edu/claudia-engel">Claudia Engel’s</a> R
+tutorial <a href="https://cengel.github.io/R-data-viz/">series</a>.
+Another useful resource I found was Thomas Lin Pedersen’s two-part
+Youtube <a href="https://youtu.be/h29g21z0a68">tutorial</a>, which
+helped lay a theoretical foundation on the syntax logic behind
+<code>ggplot</code>.</p>
 
 
 
