@@ -289,7 +289,8 @@ $(document).ready(function () {
 href="https://cengel.github.io/R-data-viz/">tutorial</a> created by <a
 href="https://profiles.stanford.edu/claudia-engel">Claudia Engel</a>, an
 academic technology specialist and lecturer in Anthropology at Stanford
-University.</em></p>
+University. However, I’ve edited Engel’s tutorial to place more emphasis
+behind the syntax logic of <code>ggplot</code>.</em></p>
 <p>Welcome to the second part of this workshop series, where we will be
 covering data visualization using a tool called <code>ggplot</code>,
 which is part of the <code>tidyverse</code> package. When I first learnt
@@ -310,7 +311,7 @@ the beginning, but upon mastery you will begin to see the power of
 href="https://openpolicing.stanford.edu">Stanford Open Policing
 Project</a>, a project that gathers data across the country on traffic
 stops made by police officers. In particular, we’ll be looking at police
-stops in Missippi.</p>
+stops in Missippi over a span of three years.</p>
 <p>We should now know how to read files from our last tutorial, where we
 introduced the <code>read_csv</code> function.</p>
 <pre class="r"><code>bias &lt;- read_csv(&quot;https://raw.githubusercontent.com/cengel/R-data-viz/master/data/MS_stops_by_county.csv&quot;)</code></pre>
@@ -327,10 +328,10 @@ contextualize what’s happening.</p>
 <pre class="r"><code>head(bias, n = 2)</code></pre>
 <p>What’s we’re looking at is a dataset of policing by counties in
 Mississippi, with some statistics about the number of black and white
-drivers being pulled over. The obvious research question to ask from
-this dataset is whether there is any racial bias in police stopping –
-perhaps we want to plot some sort of scatterplot comparing the percent
-of black stopped vs percent of white stopped.</p>
+drivers being pulled over. The research question from this dataset is
+whether there is any racial bias in police stopping – perhaps we want to
+plot some sort of scatterplot comparing the percent of black stopped vs
+percent of white stopped.</p>
 <p>Before we jump into the coding, the first thing to know about
 <code>ggplot</code> is that it works in layers, sort of like a cake! The
 bottom layer is your data, and you can layers things on top to make an
@@ -339,10 +340,7 @@ increasingly sophisticated graph.</p>
 <img src="https://englelab.gatech.edu/useRguide/images/dataviz/ge_themes.png" style = "width: 200px; height: 200px;">
 </center>
 <p>As mentioned, the “base” of your cake is the data.</p>
-<div id="dataaesthetics-layer" class="section level3">
-<h3>Data/Aesthetics Layer</h3>
 <pre class="r"><code>ggplot(data = bias)</code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>If you just plotted this and pressed run, you will be greeted by a
 grey screen on the R-studio plot. That’s good! We’ve set the “base” for
 the cake.</p>
@@ -353,7 +351,6 @@ If you’re working in a cartesian coordinate system, for example, this
 tells us where the datapoint links exactly on the plane.</p>
 <p>Let’s add a few more arguments.</p>
 <pre class="r"><code>ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped))</code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>Two things here. First, notice that our arguments for the x and y
 axis (i.e., <code>pct_black_stopped</code> and
 <code>pct_white_stopped</code>) do not have quotation marks on it. This
@@ -362,9 +359,6 @@ session last week on Intermediate R, where we introduced the pipe
 operator. Remember that <code>ggplot</code> is under the
 <code>tidyverse</code> universe (no pun intended), similar to how
 <code>dplyr</code> is part of the <code>tidyverse</code> universe.</p>
-</div>
-<div id="geometries-layer" class="section level3">
-<h3>Geometries Layer</h3>
 <p>The second question you might ask is “where is my data”? Again,
 remember we’ve just <em>mapped</em> the data onto the plane, but we
 haven’t told <code>ggplot</code> what the graph we want. This is where
@@ -383,7 +377,7 @@ if you did something like this, for example, it would not work:</p>
 ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped)) 
   + geom_point()</code></pre>
 <p>It also doesn’t really matter if the <code>aes</code> argument goes
-into the base layer or the geometries layer.</p>
+into the base layer or to the <code>geom_point</code> layer.</p>
 <pre class="r"><code>ggplot(data = bias) +
   geom_point(aes(x = pct_black_stopped, y = pct_white_stopped))</code></pre>
 <p><img src="Visualization_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
@@ -391,33 +385,213 @@ into the base layer or the geometries layer.</p>
 putting the <code>aes</code> argument in the data layer.</p>
 <p>You can play around with the <code>geom_point</code> argument — for
 instance, you don’t want circles on your graph, but want squares
-instead. And while we’re at it, you might think the squares are too
-dark, so you would like to change the opacity (what a picky
-customer!).</p>
+instead. And while we’re at it, you, the picky customer, might think the
+squares are too dark, so you would like to change the opacity.</p>
 <pre class="r"><code>ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped)) +
-  geom_point(shape = &#39;square&#39;, alpha = 0.3)</code></pre>
+  geom_point(shape = &#39;square&#39;, alpha = 0.3) </code></pre>
 <p><img src="Visualization_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-<p>Okay, let’s say we wanted to highlight the prevalence of stops among
-blacks by defining a threshold (e.g., more than 20% of black drivers
-were stopped in <a
-href="https://github.com/cengel/R-data-viz/tree/master/data">Mississippi
-between 2013-2016</a>).</p>
-<pre class="r"><code>ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped, color = pct_black_stopped &gt; 0.2)) + 
-  geom_point()</code></pre>
+<pre class="r"><code>  # Notice that we need to put quotations on &#39;square&#39;, as the argument &#39;square&#39; is not piped from our dataset</code></pre>
+<pre class="r"><code>ggplot(data = bias) +
+  geom_point(aes(x = pct_black_stopped, y = pct_white_stopped))</code></pre>
 <p><img src="Visualization_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
-<p>You might have initially thought that the <code>color</code> argument
+<p>Anyway, let’s get back to our original research question, which is to
+see if there is any bias in police stops. To do this, we should plot a
+45<span class="math inline">\(^\circ\)</span> degree reference line (or
+a slope of m = 1 because y = x) on the scatterplot. If the dots fall on
+the reference line, this means that there is no bias (e.g., in a county
+where 30% of whites are stopped and 30% of blacks are also stopped, the
+dot would fall on the reference line).</p>
+<p>We can achieve this with the <code>geom_abline</code> function, which
+draws a line from a to b.</p>
+<pre class="r"><code>ggplot(data = bias) +
+  geom_point(aes(x = pct_black_stopped, y = pct_white_stopped)) +
+  geom_abline(slope = 1, intercept = 0, color = &#39;red&#39;)</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-11-1.png" width="672" />
+Hmmm, something seems to be off, as what I wanted was the line to cut
+diagonally on the plane. This is because the y and x axis are scaled
+differently - if we wanted the slope to cut diagonally, the two axis
+have to be the same. We can do this using the
+<code>scale_x_continuous</code> and <code>scale_y_continous</code>
+argument.</p>
+<pre class="r"><code>ggplot(data = bias) +
+  geom_point(aes(x = pct_black_stopped, y = pct_white_stopped)) +
+  geom_abline(slope = 1, intercept = 0, color = &#39;red&#39;) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1)) </code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>Let’s say we were doing some exploratory data analysis and wanted to
+see data points where less than 10% of white drivers were stopped. Let’s
+trying highlighting these data points by changing the color on our
+graph.</p>
+<pre class="r"><code>ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped, color = pct_white_stopped &lt; 0.1)) + 
+  geom_abline(slope = 1, intercept = 0, color = &#39;red&#39;) +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1)) +
+  geom_point()</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-13-1.png" width="672" />
+You might have initially thought that the <code>color</code> argument
 would go into the geometries layer. However, this is not the case,
-because what we’re actually doing is creating a new column in our
-dataset, creating a TRUE/FALSE statement (i.e., whether the percent of
-blacks stopepd is greater than 0.2), and then mapping it onto the plane
-using the <code>geom_point</code> function.</p>
-<p>However, if we wanted to change something about the properties of the
-dots themselves (say we wanted to change the color), we would put our
-arguments into the <code>geom_point</code> function.</p>
+because what we’re doing is creating a new column in our dataset,
+creating a TRUE/FALSE statement (i.e., whether the percent of blacks
+stopepd is greater than 0.2), and then mapping it onto the plane using
+the <code>geom_point</code> function.</p>
+<p>Similarly, if we wanted to change something about the properties of
+the dots themselves (say we wanted to change the color), we would put
+our arguments into the <code>geom_point</code> function.</p>
 <pre class="r"><code>ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped)) +
   geom_point(color = &#39;steelblue&#39;)</code></pre>
-<p><img src="Visualization_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
-</div>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>Interesting! Just by visual inspection we see that there’s something
+interesting going on there, as a lot of points seem to be aggregated
+below the reference line. We can “zoom in” by tweaking
+<code>scale_x_continuous</code> and <code>scale_y_continuous</code>:</p>
+<pre class="r"><code>ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped, color = pct_white_stopped &lt; 0.1)) + 
+  geom_abline(slope = 1, intercept = 0, color = &#39;red&#39;) +
+  scale_x_continuous(limits = c(0, 0.1)) +
+  scale_y_continuous(limits = c(0, 0.1)) +
+  geom_point()</code></pre>
+<pre><code>## Warning: Removed 44 rows containing missing values (geom_point).</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-15-1.png" width="672" />
+Here the <code>color</code> argument is redundant because we have scaled
+the axis in a way that would only capture <code>pct_white_stopped</code>
+to be &lt; 0.1. Notice that we also get a warning that some values are
+cut of because we have essentially cropped our graph.</p>
+<p>Really, we’ve covered the hardest part of the workshop, which is
+getting used to the language and syntax of <code>ggplot</code>. Once we
+know how the toolkit belt works, what we’re really doing now is adding
+more and more toolkits into the belt. So give yourselves a pat in the
+back.</p>
+<p>While the scatterplot gives us a good overview, we might want to look
+at each of the counties in Mississippi. We can do this by finding the
+difference between <code>pct_white_stopped</code> and
+<code>pct_black_stopped</code> (i.e.,
+<code>pct_white_stopped - pct_black_stopped</code>), and to see whether
+there is bias in police stops at each county. This difference has been
+calculated and stored under the variable <code>wb_delta</code>, where a
+positive <span class="math inline">\(\Delta\)</span> indicates a bias
+towards stopping whites.</p>
+<pre class="r"><code>ggplot(data = bias, aes(x = county_name, y = wb_delta)) + 
+  geom_col()</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>Clearly, we can’t distinguish one county from another country - it’s
+not readable at all. We can fix this problem by flipping the
+coordinates:</p>
+<pre class="r"><code>ggplot(data = bias, aes(x = county_name, y = wb_delta)) +
+  geom_col() + 
+  coord_flip()</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p>Since most people read from top to bottom, we might want to flip the
+ordering of <code>county_name</code> so that Adams County is on the
+bottom (or <em>further top of the screen</em> — but in graphics the
+coordinate system is flipped on the y-axis). Unfortunately, there is no
+intuitive solution (such as adding a negative sign before the
+<code>county_name</code>). You must use the function
+<code>scale_x_discrete</code> and reverse the limits. Note that this
+will not work if the x variable is continuous.</p>
+<pre class="r"><code>ggplot(data = bias, aes(x = county_name, y = wb_delta)) +
+  geom_col() + 
+  coord_flip() +
+  scale_x_discrete(limits = rev)</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<p>Let’s try doing the same thing for the continuous variable
+<code>wb_delta</code>, which requires some knowledge of the
+idiosyncrasies of <code>ggplot</code> functions. Again, stackoverflow
+and Google is your friend here.</p>
+<pre class="r"><code>ggplot(data = bias, aes(x = county_name, y = wb_delta)) +
+  geom_col() + 
+  coord_flip() +
+  scale_y_reverse(limits = c(1,-1)) # You could also just use scale_y_reverse() </code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-19-1.png" width="672" />
+We can also reorder the counties by the <code>wb_delta</code> values,
+from lowest (indicating black bias) to highest (indicating white
+bias).</p>
+<pre class="r"><code>ggplot(bias, aes(x = reorder(county_name, -wb_delta), y = wb_delta)) +
+  geom_col() + 
+  coord_flip()</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-20-1.png" width="672" />
+Before I forget to mention, we could also simply the code a bit (which I
+should have done previously, but for illustrative purposes I copied
+everything out) by assigning everything before <code>geom_col()</code>
+to <code>p</code>.</p>
+<pre class="r"><code>p &lt;- ggplot(bias, aes(x = reorder(county_name, -wb_delta), y = wb_delta)) +
+  geom_col() 
+
+p + coord_flip()</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-21-1.png" width="672" />
+Okay, so I think we’ve exhausted this dataset a bit - let’s work with an
+extension of this dataset which we will call <code>reasons</code>.</p>
+<pre class="r"><code>reasons &lt;- read_csv(&quot;https://github.com/cengel/R-data-viz/raw/master/data/MS_stops.csv&quot;)</code></pre>
+<pre><code>## Rows: 211211 Columns: 15
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr  (10): id, state, county_name, police_department, driver_gender, driver_...
+## dbl   (3): county_fips, driver_age, y_day
+## date  (2): stop_date, driver_birthdate
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<p>Again, it’s a good habit to look at both the <code>spec</code> output
+from <code>read_csv</code> and some techniques I covered last week to
+get a good overview of the data.</p>
+<p>It’s always a good habit to do a quick scan of the data to
+contextualize what’s happening.</p>
+<pre class="r"><code>head(reasons, n = 2)</code></pre>
+<p>Another way to get to know your data is to build a bar graph,
+especially when we’re working with categorical variables. This can be
+done with the <code>geom_bar</code> function.</p>
+<pre class="r"><code>ggplot(data = reasons, aes(x = violation)) + 
+  geom_bar()</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<p>Notice that we don’t need to specific a <code>y</code> argument for
+<code>aes</code>, which makes sense because we are trying to tabulate
+the different violation counts. What’s happening here is that the
+<code>violation</code> variable gets passed to <code>geom_bar()</code>,
+which basically does the job of <code>group_by</code> and
+<code>count</code>. This is something we covered last week:</p>
+<pre class="r"><code>reasons %&gt;% group_by(violation) %&gt;% count()</code></pre>
+<p>Generally, <code>ggplot</code> has a shortcut construction that can
+do what we just illustrated (in the above example, it was
+<code>geom_bar</code>). But this is not <em>always</em> the case, and as
+such, it’s good to know functions like <code>after_stat</code>, where
+you can manually tweak the calculations. For instance, I might be
+interested in getting the percentage of each of the violations:</p>
+<pre class="r"><code># Convert to percentage
+ggplot(data = reasons, aes(x = violation, y = after_stat(count/ sum(count) * 100))) + 
+  geom_bar()</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<p>We could also change the colors of the bar — but instead of using the
+<code>color</code> function, we can use <code>fill</code>.</p>
+<pre class="r"><code>ggplot(data = reasons, aes(x = violation)) + 
+  geom_bar(fill = &quot;green&quot;)</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<p>But just changing the colors is not that insightful. Say, for
+instance, we wanted to know how many of speeding violations, for
+instance, were incurred by whites compared to blacks.</p>
+<pre class="r"><code>ggplot(data = reasons, aes(x = violation)) + 
+  geom_bar(aes(fill = driver_race))</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<p>Here the <code>aes</code> function needs to be called again (i.e.,
+<code>geom_bar(fill = driver_race)</code> won’t work). This is similar
+to the earlier example, where we wanted to change the
+<code>pct_white_stopped</code> colors after we defined a certain
+threshold. We could just have included the <code>fill</code> argument in
+our <code>data</code> layer.</p>
+<pre class="r"><code>ggplot(data = reasons, aes(x = violation, fill = driver_race)) + 
+  geom_bar()</code></pre>
+<p>One more point on this. We could also tell ggplot to stretch the bars
+between [0,1], and find the proportions of violations that are grouped
+by race.</p>
+<pre class="r"><code># Convert to percentage
+ggplot(data = reasons, aes(x = violation)) + 
+  geom_bar(aes(fill = driver_gender), position = &quot;fill&quot;)</code></pre>
+<p><img src="Visualization_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
+<p>Last but not the least, I’ll introduce everyone to
+<code>facet_wrap</code>. As you can tell, I always save the best for
+last, as this is a very powerful function. What faceting essentially
+does is split one plot into multiple smaller plots, making the plot less
+confusing and easier to interpret for the reader.</p>
 
 
 

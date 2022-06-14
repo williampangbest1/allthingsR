@@ -11,17 +11,16 @@ knitr::opts_chunk$set(echo = TRUE)
 library(knitr)
 
 # Needed for workshop code
-library(readr) # Used to read .rds files -- remember to install the package!
 library(tidyverse)
 ```
 
-*This workshop mostly follows a wonderful [tutorial](https://cengel.github.io/R-data-viz/) created by [Claudia Engel](https://profiles.stanford.edu/claudia-engel), an academic technology specialist and lecturer in Anthropology at Stanford University.*
+*This workshop mostly follows a wonderful [tutorial](https://cengel.github.io/R-data-viz/) created by [Claudia Engel](https://profiles.stanford.edu/claudia-engel), an academic technology specialist and lecturer in Anthropology at Stanford University. However, I've edited Engel's tutorial to place more emphasis behind the syntax logic of `ggplot`.*
 
 Welcome to the second part of this workshop series, where we will be covering data visualization using a tool called `ggplot`, which is part of the `tidyverse` package. When I first learnt `ggplot` on my own, I was quite confused — I came from coding in MATLAB, which was very literal (for instance, if you wanted to plot a sine wave with the equation `y = sin(t)`, it was simply `plot(t,y)`.  
 
 The point of me saying all of this is that if you want to express more complicated ideas, being literal sometimes does not cut it. If a good novel only included terse very manner-of-fact dialogues, you would immediately drop the book. Akin to English, we need a set of rules, a structure of sorts that helps build up a language. This set of "rules" is called grammar, and as you will notice with `ggplot`, there are a lot of idiosyncrasies that might require some blind faith in the beginning, but upon mastery you will begin to see the power of `ggplot`. 
 
-Today, we'll be working with a dataset from the [Stanford Open Policing Project](https://openpolicing.stanford.edu), a project that gathers data across the country on traffic stops made by police officers. In particular, we'll be looking at police stops in Missippi. 
+Today, we'll be working with a dataset from the [Stanford Open Policing Project](https://openpolicing.stanford.edu), a project that gathers data across the country on traffic stops made by police officers. In particular, we'll be looking at police stops in Missippi over a span of three years. 
 
 We should now know how to read files from our last tutorial, where we introduced the `read_csv` function.
 
@@ -34,7 +33,7 @@ It's always a good habit to do a quick scan of the data to contextualize what's 
 ```{r, results = 'hide'}
 head(bias, n = 2)
 ```
-What's we're looking at is a dataset of policing by counties in Mississippi, with some statistics about the number of black and white drivers being pulled over. The obvious research question to ask from this dataset is whether there is any racial bias in police stopping -- perhaps we want to plot some sort of scatterplot comparing the percent of black stopped vs percent of white stopped. 
+What's we're looking at is a dataset of policing by counties in Mississippi, with some statistics about the number of black and white drivers being pulled over. The research question from this dataset is whether there is any racial bias in police stopping -- perhaps we want to plot some sort of scatterplot comparing the percent of black stopped vs percent of white stopped. 
 
 Before we jump into the coding, the first thing to know about `ggplot` is that it works in layers, sort of like a cake! The bottom layer is your data, and you can layers things on top to make an increasingly sophisticated graph. 
 
@@ -46,9 +45,7 @@ url <- "https://englelab.gatech.edu/useRguide/images/dataviz/ge_themes.png"
 
 As mentioned, the "base" of your cake is the data.
 
-### Data/Aesthetics Layer
-
-```{r}
+```{r, eval = FALSE}
 ggplot(data = bias)
 ```
 
@@ -58,17 +55,15 @@ Okay, let's start adding an argument called `aes`. `aes` refers to aesthetic map
 
 Let's add a few more arguments. 
 
-```{r}
+```{r, eval = FALSE}
 ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped))
 ```
 
 Two things here. First, notice that our arguments for the x and y axis (i.e., `pct_black_stopped` and `pct_white_stopped`) do not have quotation marks on it. This shouldn't come as a surprise to us, especially for those who joined my session last week on Intermediate R, where we introduced the pipe operator. Remember that `ggplot` is under the `tidyverse` universe (no pun intended), similar to how `dplyr` is part of the `tidyverse` universe.
 
-### Geometries Layer
-
 The second question you might ask is "where is my data"? Again, remember we've just *mapped* the data onto the plane, but we haven't told `ggplot` what the graph we want. This is where the fancy stuff begins to come into play. For a scatterplot, where we just want dots or points on the graph, we use the function `geom_point()`.
 
-```{r}
+```{r, results = 'hide'}
 ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped)) +
   geom_point()
 ```
@@ -82,7 +77,7 @@ ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped))
   + geom_point()
 ```
 
-It also doesn't really matter if the `aes` argument goes into the base layer or the geometries layer.
+It also doesn't really matter if the `aes` argument goes into the base layer or to the `geom_point` layer.
 
 ```{r}
 ggplot(data = bias) +
@@ -91,30 +86,177 @@ ggplot(data = bias) +
 
 However, for consistency (and readability), we will stick with putting the `aes` argument in the data layer. 
 
-You can play around with the `geom_point` argument — for instance, you don't want circles on your graph, but want squares instead. And while we're at it, you might think the squares are too dark, so you would like to change the opacity (what a picky customer!). 
+You can play around with the `geom_point` argument — for instance, you don't want circles on your graph, but want squares instead. And while we're at it, you, the picky customer, might think the squares are too dark, so you would like to change the opacity.
 
 ```{r}
 ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped)) +
-  geom_point(shape = 'square', alpha = 0.3)
+  geom_point(shape = 'square', alpha = 0.3) 
+  # Notice that we need to put quotations on 'square', as the argument 'square' is not piped from our dataset
 ```
-
-Okay, let's say we wanted to highlight the prevalence of stops among blacks by defining a threshold (e.g., more than 20% of black drivers were stopped in [Mississippi between 2013-2016](https://github.com/cengel/R-data-viz/tree/master/data)).
 
 ```{r}
-ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped, color = pct_black_stopped > 0.2)) + 
-  geom_point()
+ggplot(data = bias) +
+  geom_point(aes(x = pct_black_stopped, y = pct_white_stopped))
 ```
 
-You might have initially thought that the `color` argument would go into the geometries layer. However, this is not the case, because what we're actually doing is creating a new column in our dataset, creating a TRUE/FALSE statement (i.e., whether the percent of blacks stopepd is greater than 0.2), and then mapping it onto the plane using the `geom_point` function. 
+Anyway, let's get back to our original research question, which is to see if there is any bias in police stops. To do this, we should plot a 45$^\circ$ degree reference line (or a slope of m = 1 because y = x) on the scatterplot. If the dots fall on the reference line, this means that there is no bias (e.g., in a county where 30% of whites are stopped and 30% of blacks are also stopped, the dot would fall on the reference line). 
 
-However, if we wanted to change something about the properties of the dots themselves (say we wanted to change the color), we would put our arguments into the `geom_point` function.
+We can achieve this with the `geom_abline` function, which draws a line from a to b.
+
+```{r}
+ggplot(data = bias) +
+  geom_point(aes(x = pct_black_stopped, y = pct_white_stopped)) +
+  geom_abline(slope = 1, intercept = 0, color = 'red')
+```
+Hmmm, something seems to be off, as what I wanted was the line to cut diagonally on the plane. This is because the y and x axis are scaled differently - if we wanted the slope to cut diagonally, the two axis have to be the same. We can do this using the `scale_x_continuous` and `scale_y_continous` argument.
+
+```{r}
+ggplot(data = bias) +
+  geom_point(aes(x = pct_black_stopped, y = pct_white_stopped)) +
+  geom_abline(slope = 1, intercept = 0, color = 'red') +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1)) 
+```
+
+Let's say we were doing some exploratory data analysis and wanted to see data points where less than 10% of white drivers were stopped. Let's trying highlighting these data points by changing the color on our graph. 
+
+```{r}
+ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped, color = pct_white_stopped < 0.1)) + 
+  geom_abline(slope = 1, intercept = 0, color = 'red') +
+  scale_x_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0, 1)) +
+  geom_point()
+```
+You might have initially thought that the `color` argument would go into the geometries layer. However, this is not the case, because what we're doing is creating a new column in our dataset, creating a TRUE/FALSE statement (i.e., whether the percent of blacks stopepd is greater than 0.2), and then mapping it onto the plane using the `geom_point` function. 
+
+Similarly, if we wanted to change something about the properties of the dots themselves (say we wanted to change the color), we would put our arguments into the `geom_point` function.
 
 ```{r}
 ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped)) +
   geom_point(color = 'steelblue')
 ```
 
+Interesting! Just by visual inspection we see that there's something interesting going on there, as a lot of points seem to be aggregated below the reference line. We can "zoom in" by tweaking `scale_x_continuous` and `scale_y_continuous`:
 
+```{r}
+ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped, color = pct_white_stopped < 0.1)) + 
+  geom_abline(slope = 1, intercept = 0, color = 'red') +
+  scale_x_continuous(limits = c(0, 0.1)) +
+  scale_y_continuous(limits = c(0, 0.1)) +
+  geom_point()
+```
+Here the `color` argument is redundant because we have scaled the axis in a way that would only capture `pct_white_stopped` to be < 0.1. Notice that we also get a warning that some values are cut of because we have essentially cropped our graph.
 
+Really, we've covered the hardest part of the workshop, which is getting used to the language and syntax of `ggplot`. Once we know how the toolkit belt works, what we're really doing now is adding more and more toolkits into the belt. So give yourselves a pat in the back.
 
+While the scatterplot gives us a good overview, we might want to look at each of the counties in Mississippi. We can do this by finding the difference between `pct_white_stopped` and `pct_black_stopped` (i.e., `pct_white_stopped - pct_black_stopped`), and to see whether there is bias in police stops at each county. This difference has been calculated and stored under the variable `wb_delta`, where a positive $\Delta$ indicates a bias towards stopping whites.
 
+```{r}
+ggplot(data = bias, aes(x = county_name, y = wb_delta)) + 
+  geom_col()
+```
+
+Clearly, we can't distinguish one county from another country - it's not readable at all. We can fix this problem by flipping the coordinates:
+
+```{r}
+ggplot(data = bias, aes(x = county_name, y = wb_delta)) +
+  geom_col() + 
+  coord_flip()
+```
+
+Since most people read from top to bottom, we might want to flip the ordering of `county_name` so that Adams County is on the bottom (or *further top of the screen* — but in graphics the coordinate system is flipped on the y-axis). Unfortunately, there is no intuitive solution (such as adding a negative sign before the `county_name`). You must use the function `scale_x_discrete` and reverse the limits. Note that this will not work if the x variable is continuous. 
+
+```{r}
+ggplot(data = bias, aes(x = county_name, y = wb_delta)) +
+  geom_col() + 
+  coord_flip() +
+  scale_x_discrete(limits = rev)
+```
+
+Let's try doing the same thing for the continuous variable `wb_delta`, which requires some knowledge of the idiosyncrasies of `ggplot` functions. Again, stackoverflow and Google is your friend here.
+
+```{r}
+ggplot(data = bias, aes(x = county_name, y = wb_delta)) +
+  geom_col() + 
+  coord_flip() +
+  scale_y_reverse(limits = c(1,-1)) # You could also just use scale_y_reverse() 
+```
+We can also reorder the counties by the `wb_delta` values, from lowest (indicating black bias) to highest (indicating white bias).
+
+```{r}
+ggplot(bias, aes(x = reorder(county_name, -wb_delta), y = wb_delta)) +
+  geom_col() + 
+  coord_flip()
+```
+Before I forget to mention, we could also simply the code a bit (which I should have done previously, but for illustrative purposes I copied everything out) by assigning everything before `geom_col()` to `p`.
+
+```{r}
+p <- ggplot(bias, aes(x = reorder(county_name, -wb_delta), y = wb_delta)) +
+  geom_col() 
+
+p + coord_flip()
+```
+Okay, so I think we've exhausted this dataset a bit - let's work with an extension of this dataset which we will call `reasons`.
+
+```{r, results = 'hide'}
+reasons <- read_csv("https://github.com/cengel/R-data-viz/raw/master/data/MS_stops.csv")
+```
+
+Again, it's a good habit to look at both the `spec` output from `read_csv` and some techniques I covered last week to get a good overview of the data.
+
+It's always a good habit to do a quick scan of the data to contextualize what's happening.
+
+```{r, results = 'hide'}
+head(reasons, n = 2)
+```
+Another way to get to know your data is to build a bar graph, especially when we're working with categorical variables. This can be done with the `geom_bar` function.
+
+```{r}
+ggplot(data = reasons, aes(x = violation)) + 
+  geom_bar()
+```
+
+Notice that we don't need to specific a `y` argument for `aes`, which makes sense because we are trying to tabulate the different violation counts. What's happening here is that the `violation` variable gets passed to `geom_bar()`, which basically does the job of `group_by` and `count`. This is something we covered last week:
+
+```{r, eval= FALSE}
+reasons %>% group_by(violation) %>% count()
+```
+
+Generally, `ggplot` has a shortcut construction that can do what we just illustrated (in the above example, it was `geom_bar`).  But this is not *always* the case, and as such, it's good to know functions like `after_stat`, where you can manually tweak the calculations. For instance, I might be interested in getting the percentage of each of the violations:
+
+```{r}
+# Convert to percentage
+ggplot(data = reasons, aes(x = violation, y = after_stat(count/ sum(count) * 100))) + 
+  geom_bar()
+```
+
+We could also change the colors of the bar — but instead of using the `color` function, we can use `fill`. 
+
+```{r}
+ggplot(data = reasons, aes(x = violation)) + 
+  geom_bar(fill = "green")
+```
+
+But just changing the colors is not that insightful. Say, for instance, we wanted to know how many of speeding violations, for instance, were incurred by whites compared to blacks. 
+
+```{r}
+ggplot(data = reasons, aes(x = violation)) + 
+  geom_bar(aes(fill = driver_race))
+```
+
+Here the `aes` function needs to be called again (i.e., `geom_bar(fill = driver_race)` won't work). This is similar to the earlier example, where we wanted to change the `pct_white_stopped` colors after we defined a certain threshold. We could just have included the `fill` argument in our `data` layer. 
+
+```{r, eval = FALSE, fig.hide = TRUE}
+ggplot(data = reasons, aes(x = violation, fill = driver_race)) + 
+  geom_bar()
+```
+
+One more point on this. We could also tell ggplot to stretch the bars between [0,1], and find the proportions of violations that are grouped by race.
+
+```{r}
+# Convert to percentage
+ggplot(data = reasons, aes(x = violation)) + 
+  geom_bar(aes(fill = driver_gender), position = "fill")
+```
+
+Last but not the least, I'll introduce everyone to `facet_wrap`. As you can tell, I always save the best for last, as this is a very powerful function. What faceting essentially does is split one plot into multiple smaller plots, making the plot less confusing and easier to interpret for the reader.
