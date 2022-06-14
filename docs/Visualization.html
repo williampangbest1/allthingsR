@@ -327,11 +327,11 @@ introduced the <code>read_csv</code> function.</p>
 contextualize what’s happening.</p>
 <pre class="r"><code>head(bias, n = 2)</code></pre>
 <p>What’s we’re looking at is a dataset of policing by counties in
-Mississippi, with some statistics about the number of black and white
+Mississippi, with some statistics about the number of Black and White
 drivers being pulled over. The research question from this dataset is
 whether there is any racial bias in police stopping – perhaps we want to
-plot some sort of scatterplot comparing the percent of black stopped vs
-percent of white stopped.</p>
+plot some sort of scatterplot comparing the percent of Black stopped vs
+percent of White stopped.</p>
 <p>Before we jump into the coding, the first thing to know about
 <code>ggplot</code> is that it works in layers, sort of like a cake! The
 bottom layer is your data, and you can layers things on top to make an
@@ -395,7 +395,7 @@ see if there is any bias in police stops. To do this, we should plot a
 45<span class="math inline">\(^\circ\)</span> degree reference line (or
 a slope of m = 1 because y = x) on the scatterplot. If the dots fall on
 the reference line, this means that there is no bias (e.g., in a county
-where 30% of whites are stopped and 30% of blacks are also stopped, the
+where 30% of Whites are stopped and 30% of Blacks are also stopped, the
 dot would fall on the reference line).</p>
 <p>We can achieve this with the <code>geom_abline</code> function, which
 draws a line from a to b.</p>
@@ -417,7 +417,7 @@ argument.</p>
 <pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
 <p><img src="Visualization_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>Let’s say we were doing some exploratory data analysis and wanted to
-see data points where less than 10% of white drivers were stopped. Let’s
+see data points where less than 10% of White drivers were stopped. Let’s
 trying highlighting these data points by changing the color on our
 graph.</p>
 <pre class="r"><code>ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped, color = pct_white_stopped &lt; 0.1)) + 
@@ -430,7 +430,7 @@ graph.</p>
 You might have initially thought that the <code>color</code> argument
 would go into the geometries layer. However, this is not the case,
 because what we’re doing is creating a new column in our dataset,
-creating a TRUE/FALSE statement (i.e., whether the percent of blacks
+creating a TRUE/FALSE statement (i.e., whether the percent of Blacks
 stopepd is greater than 0.2), and then mapping it onto the plane using
 the <code>geom_point</code> function.</p>
 <p>Similarly, if we wanted to change something about the properties of
@@ -467,7 +467,7 @@ difference between <code>pct_white_stopped</code> and
 there is bias in police stops at each county. This difference has been
 calculated and stored under the variable <code>wb_delta</code>, where a
 positive <span class="math inline">\(\Delta\)</span> indicates a bias
-towards stopping whites.</p>
+towards stopping Whites.</p>
 <pre class="r"><code>ggplot(data = bias, aes(x = county_name, y = wb_delta)) + 
   geom_col()</code></pre>
 <p><img src="Visualization_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
@@ -501,7 +501,7 @@ and Google is your friend here.</p>
   scale_y_reverse(limits = c(1,-1)) # You could also just use scale_y_reverse() </code></pre>
 <p><img src="Visualization_files/figure-html/unnamed-chunk-18-1.png" width="672" />
 We can also reorder the counties by the <code>wb_delta</code> values,
-from lowest (indicating black bias) to highest (indicating white
+from lowest (indicating Black bias) to highest (indicating White
 bias).</p>
 <pre class="r"><code>ggplot(bias, aes(x = reorder(county_name, -wb_delta), y = wb_delta)) +
   geom_col() + 
@@ -563,7 +563,7 @@ ggplot(data = reasons, aes(x = violation, y = after_stat(count/ sum(count) * 100
 <p><img src="Visualization_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
 <p>But just changing the colors is not that insightful. Say, for
 instance, we wanted to know how many of speeding violations were
-incurred by whites compared to blacks.</p>
+incurred by Whites compared to Blacks.</p>
 <pre class="r"><code>ggplot(data = reasons, aes(x = violation)) + 
   geom_bar(aes(fill = driver_race))</code></pre>
 <p><img src="Visualization_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>

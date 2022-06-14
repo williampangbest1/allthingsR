@@ -33,7 +33,7 @@ It's always a good habit to do a quick scan of the data to contextualize what's 
 ```{r, results = 'hide'}
 head(bias, n = 2)
 ```
-What's we're looking at is a dataset of policing by counties in Mississippi, with some statistics about the number of black and white drivers being pulled over. The research question from this dataset is whether there is any racial bias in police stopping -- perhaps we want to plot some sort of scatterplot comparing the percent of black stopped vs percent of white stopped. 
+What's we're looking at is a dataset of policing by counties in Mississippi, with some statistics about the number of Black and White drivers being pulled over. The research question from this dataset is whether there is any racial bias in police stopping -- perhaps we want to plot some sort of scatterplot comparing the percent of Black stopped vs percent of White stopped. 
 
 Before we jump into the coding, the first thing to know about `ggplot` is that it works in layers, sort of like a cake! The bottom layer is your data, and you can layers things on top to make an increasingly sophisticated graph. 
 
@@ -92,7 +92,7 @@ You can play around with the `geom_point` argument — for instance, you don't w
 ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped)) +
   geom_point(shape = 'square', alpha = 0.3) # Notice that we need to put quotations on 'square', as the argument 'square' is not piped from our dataset
 ```
-Anyway, let's get back to our original research question, which is to see if there is any bias in police stops. To do this, we should plot a 45$^\circ$ degree reference line (or a slope of m = 1 because y = x) on the scatterplot. If the dots fall on the reference line, this means that there is no bias (e.g., in a county where 30% of whites are stopped and 30% of blacks are also stopped, the dot would fall on the reference line). 
+Anyway, let's get back to our original research question, which is to see if there is any bias in police stops. To do this, we should plot a 45$^\circ$ degree reference line (or a slope of m = 1 because y = x) on the scatterplot. If the dots fall on the reference line, this means that there is no bias (e.g., in a county where 30% of Whites are stopped and 30% of Blacks are also stopped, the dot would fall on the reference line). 
 
 We can achieve this with the `geom_abline` function, which draws a line from a to b.
 
@@ -111,7 +111,7 @@ ggplot(data = bias) +
   scale_y_continuous(limits = c(0, 1)) 
 ```
 
-Let's say we were doing some exploratory data analysis and wanted to see data points where less than 10% of white drivers were stopped. Let's trying highlighting these data points by changing the color on our graph. 
+Let's say we were doing some exploratory data analysis and wanted to see data points where less than 10% of White drivers were stopped. Let's trying highlighting these data points by changing the color on our graph. 
 
 ```{r}
 ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped, color = pct_white_stopped < 0.1)) + 
@@ -120,7 +120,7 @@ ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped, color = pc
   scale_y_continuous(limits = c(0, 1)) +
   geom_point()
 ```
-You might have initially thought that the `color` argument would go into the geometries layer. However, this is not the case, because what we're doing is creating a new column in our dataset, creating a TRUE/FALSE statement (i.e., whether the percent of blacks stopepd is greater than 0.2), and then mapping it onto the plane using the `geom_point` function. 
+You might have initially thought that the `color` argument would go into the geometries layer. However, this is not the case, because what we're doing is creating a new column in our dataset, creating a TRUE/FALSE statement (i.e., whether the percent of Blacks stopepd is greater than 0.2), and then mapping it onto the plane using the `geom_point` function. 
 
 Similarly, if we wanted to change something about the properties of the dots themselves (say we wanted to change the color), we would put our arguments into the `geom_point` function.
 
@@ -142,7 +142,7 @@ Here the `color` argument is redundant because we have scaled the axis in a way 
 
 Really, we've covered the hardest part of the workshop, which is getting used to the language and syntax of `ggplot`. Once we know how the toolkit belt works, what we're really doing now is adding more and more toolkits into the belt. So give yourselves a pat in the back.
 
-While the scatterplot gives us a good overview, we might want to look at each of the counties in Mississippi. We can do this by finding the difference between `pct_white_stopped` and `pct_black_stopped` (i.e., `pct_white_stopped - pct_black_stopped`), and to see whether there is bias in police stops at each county. This difference has been calculated and stored under the variable `wb_delta`, where a positive $\Delta$ indicates a bias towards stopping whites.
+While the scatterplot gives us a good overview, we might want to look at each of the counties in Mississippi. We can do this by finding the difference between `pct_white_stopped` and `pct_black_stopped` (i.e., `pct_white_stopped - pct_black_stopped`), and to see whether there is bias in police stops at each county. This difference has been calculated and stored under the variable `wb_delta`, where a positive $\Delta$ indicates a bias towards stopping Whites.
 
 ```{r}
 ggplot(data = bias, aes(x = county_name, y = wb_delta)) + 
@@ -174,7 +174,7 @@ ggplot(data = bias, aes(x = county_name, y = wb_delta)) +
   coord_flip() +
   scale_y_reverse(limits = c(1,-1)) # You could also just use scale_y_reverse() 
 ```
-We can also reorder the counties by the `wb_delta` values, from lowest (indicating black bias) to highest (indicating white bias).
+We can also reorder the counties by the `wb_delta` values, from lowest (indicating Black bias) to highest (indicating White bias).
 
 ```{r}
 ggplot(bias, aes(x = reorder(county_name, -wb_delta), y = wb_delta)) +
@@ -228,7 +228,7 @@ ggplot(data = reasons, aes(x = violation)) +
   geom_bar(fill = "green")
 ```
 
-But just changing the colors is not that insightful. Say, for instance, we wanted to know how many of speeding violations were incurred by whites compared to blacks. 
+But just changing the colors is not that insightful. Say, for instance, we wanted to know how many of speeding violations were incurred by Whites compared to Blacks. 
 
 ```{r}
 ggplot(data = reasons, aes(x = violation)) + 
