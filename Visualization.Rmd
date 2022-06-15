@@ -20,7 +20,7 @@ Welcome to the second part of this workshop series, where we will be covering da
 
 The point of me saying all of this is that if you want to express more complicated ideas, being literal sometimes does not cut it. If a good novel only included terse very manner-of-fact dialogues, you would immediately drop the book. Akin to English, we need a set of rules, a structure of sorts that helps build up a language. This set of "rules" is called grammar, and as you will notice with `ggplot`, there are a lot of idiosyncrasies that might require some blind faith in the beginning, but upon mastery you will begin to see the power of `ggplot`. 
 
-Today, we'll be working with a dataset from the [Stanford Open Policing Project](https://openpolicing.stanford.edu), a project that gathers data across the country on traffic stops made by police officers. In particular, we'll be looking at police stops in Missippi over a span of three years. 
+Today, we'll be working with a dataset from the [Stanford Open Policing Project](https://openpolicing.stanford.edu), a project that gathers data across the county on traffic stops made by police officers. In particular, we'll be looking at police stops in Missippi over a span of three years. 
 
 We should now know how to read files from our last tutorial, where we introduced the `read_csv` function.
 
@@ -140,7 +140,7 @@ ggplot(data = bias, aes(x = pct_black_stopped, y = pct_white_stopped, color = pc
 ```
 Here the `color` argument is redundant because we have scaled the axis in a way that would only capture `pct_white_stopped` to be < 0.1. Notice that we also get a warning that some values are cut of because we have essentially cropped our graph.
 
-Really, we've covered the hardest part of the workshop, which is getting used to the language and syntax of `ggplot`. Once we know how the toolkit belt works, what we're really doing now is adding more and more toolkits into the belt. So give yourselves a pat in the back.
+Really, we've covered the hardest part of the workshop, which is getting used to the language and syntax of `ggplot`. Once we know how the toolkit belt works, what we're really doing now is adding more and more tools into the belt. So give yourselves a pat in the back.
 
 While the scatterplot gives us a good overview, we might want to look at each of the counties in Mississippi. We can do this by finding the difference between `pct_white_stopped` and `pct_black_stopped` (i.e., `pct_white_stopped - pct_black_stopped`), and to see whether there is bias in police stops at each county. This difference has been calculated and stored under the variable `wb_delta`, where a positive $\Delta$ indicates a bias towards stopping Whites.
 
@@ -149,7 +149,7 @@ ggplot(data = bias, aes(x = county_name, y = wb_delta)) +
   geom_col()
 ```
 
-Clearly, we can't distinguish one county from another country - it's not readable at all. We can fix this problem by flipping the coordinates:
+Clearly, we can't distinguish one county from another county - it's not readable at all. We can fix this problem by flipping the coordinates:
 
 ```{r}
 ggplot(data = bias, aes(x = county_name, y = wb_delta)) +

@@ -309,7 +309,7 @@ the beginning, but upon mastery you will begin to see the power of
 <code>ggplot</code>.</p>
 <p>Today, we’ll be working with a dataset from the <a
 href="https://openpolicing.stanford.edu">Stanford Open Policing
-Project</a>, a project that gathers data across the country on traffic
+Project</a>, a project that gathers data across the county on traffic
 stops made by police officers. In particular, we’ll be looking at police
 stops in Missippi over a span of three years.</p>
 <p>We should now know how to read files from our last tutorial, where we
@@ -457,7 +457,7 @@ cut of because we have essentially cropped our graph.</p>
 <p>Really, we’ve covered the hardest part of the workshop, which is
 getting used to the language and syntax of <code>ggplot</code>. Once we
 know how the toolkit belt works, what we’re really doing now is adding
-more and more toolkits into the belt. So give yourselves a pat in the
+more and more tools into the belt. So give yourselves a pat in the
 back.</p>
 <p>While the scatterplot gives us a good overview, we might want to look
 at each of the counties in Mississippi. We can do this by finding the
@@ -471,7 +471,7 @@ towards stopping Whites.</p>
 <pre class="r"><code>ggplot(data = bias, aes(x = county_name, y = wb_delta)) + 
   geom_col()</code></pre>
 <p><img src="Visualization_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
-<p>Clearly, we can’t distinguish one county from another country - it’s
+<p>Clearly, we can’t distinguish one county from another county - it’s
 not readable at all. We can fix this problem by flipping the
 coordinates:</p>
 <pre class="r"><code>ggplot(data = bias, aes(x = county_name, y = wb_delta)) +
