@@ -247,7 +247,7 @@ One more point on this. We could also tell ggplot to stretch the bars between [0
 ```{r}
 # Convert to percentage
 ggplot(data = reasons, aes(x = violation)) + 
-  geom_bar(aes(fill = driver_gender), position = "fill")
+  geom_bar(aes(fill = driver_race), position = "fill")
 ```
 
 We'll now do a gear shift into plotting time series data, which is dear and near to me as I've worked on analyzing COVID datasets. In this example, we're interested in knowing what the type of violations occur on a given day of the week. 
