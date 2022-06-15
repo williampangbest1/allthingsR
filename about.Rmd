@@ -1,2 +1,2 @@
 * [Intermediate R](IntermediateR.html): June 8, 2022 [Yale Stat Lab](https://marx.library.yale.edu/data-gis-statlab/statlab) workshop
-* [Visualization](Visualization.html): June 15, 2022 [Yale Stat Lab](https://marx.library.yale.edu/data-gis-statlab/statlab) workshop, Datasets can be downloaded here ([bias](https://openpolicing.stanford.edu/data/) and [reasons](https://github.com/cengel/R-data-viz/raw/master/data/MS_stops.csv))
+* [Visualization](Visualization.html): June 15, 2022 [Yale Stat Lab](https://marx.library.yale.edu/data-gis-statlab/statlab) workshop, Datasets can be downloaded here ([bias](https://raw.githubusercontent.com/cengel/R-data-viz/master/data/MS_stops_by_county.csv) and [reasons](https://github.com/cengel/R-data-viz/raw/master/data/MS_stops.csv))
