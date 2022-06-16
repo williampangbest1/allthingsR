@@ -580,7 +580,7 @@ between [0,1], and find the proportions of violations that are grouped
 by race.</p>
 <pre class="r"><code># Convert to percentage
 ggplot(data = reasons, aes(x = violation)) + 
-  geom_bar(aes(fill = driver_gender), position = &quot;fill&quot;)</code></pre>
+  geom_bar(aes(fill = driver_race), position = &quot;fill&quot;)</code></pre>
 <p><img src="Visualization_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
 <p>We’ll now do a gear shift into plotting time series data, which is
 dear and near to me as I’ve worked on analyzing COVID datasets. In this
