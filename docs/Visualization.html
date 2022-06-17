@@ -429,10 +429,10 @@ graph.</p>
 <p><img src="Visualization_files/figure-html/unnamed-chunk-12-1.png" width="672" />
 You might have initially thought that the <code>color</code> argument
 would go into the geometries layer. However, this is not the case,
-because what we’re doing is creating a new column in our dataset,
-creating a TRUE/FALSE statement (i.e., whether the percent of Blacks
-stopepd is greater than 0.2), and then mapping it onto the plane using
-the <code>geom_point</code> function.</p>
+because what we’re <em>conceptually</em> doing is creating a new column
+in our dataset, creating a TRUE/FALSE statement (i.e., whether the
+percent of Blacks stopped is greater than 0.2), and then mapping it onto
+the plane using the <code>geom_point</code> function.</p>
 <p>Similarly, if we wanted to change something about the properties of
 the dots themselves (say we wanted to change the color), we would put
 our arguments into the <code>geom_point</code> function.</p>
@@ -642,10 +642,10 @@ Notice the <code>~</code> tilde. The tilde can be read as “by” -
 semantically, this would be equivalent to <a
 href="https://bookdown.org/yih_huynh/Guide-to-R-Book/facet-wrapping.html">saying</a>
 “I want to make new graphs separated by the cut categories”.</p>
-<p>We can force the facet wrap to have 2 columns, i.e., a 2x3 grid.
+<p>We can force the facet wrap to have 2 columns, i.e., a 3x2 grid.
 Let’s also rename the <code>y</code> label to something else other than
 n and remove the <code>x</code> label because the day of week is pretty
-intutive.</p>
+intuitive.</p>
 <pre class="r"><code>p &lt;- ggplot(dow_violations, aes(x = wk_day, y = n, group = violation)) +
      geom_line() +
      facet_wrap(~ violation, ncol = 2) +
